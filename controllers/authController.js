@@ -352,11 +352,11 @@ exports.updateAvatar = async (req, res) => {
         await user.save();
 
         req.flash('success', 'Profile picture updated!');
-        res.redirect('back');
+        res.redirect(req.header('Referer') || '/');
     } catch (err) {
         console.error(err);
         req.flash('error', 'Server Error');
-        res.redirect('back');
+        res.redirect(req.header('Referer') || '/');
     }
 };
 
@@ -369,10 +369,10 @@ exports.removeAvatar = async (req, res) => {
         user.avatar = undefined; // Reset to default (or handle default schema logic)
         await user.save();
         req.flash('success', 'Profile picture removed.');
-        res.redirect('back');
+        res.redirect(req.header('Referer') || '/');
     } catch (err) {
         console.error(err);
         req.flash('error', 'Server Error');
-        res.redirect('back');
+        res.redirect(req.header('Referer') || '/');
     }
 };

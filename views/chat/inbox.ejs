@@ -13,10 +13,12 @@
                         <div class="card-left">
                             <div class="user-avatar-wrapper">
                                 <% if (convo.isAnonymous) { %>
-                                    <img src="/images/default-avatar.png" class="user-avatar" alt="Anonymous">
+                                    <img src="https://ui-avatars.com/api/?name=Anonymous&background=6c757d&color=fff&size=64"
+                                        class="user-avatar" alt="Anonymous">
                                     <% } else { %>
                                         <img src="/uploads/<%= convo.avatar || 'default-avatar.png' %>"
-                                            class="user-avatar" alt="User">
+                                            class="user-avatar" alt="User"
+                                            onerror="this.onerror=null;this.src='https://ui-avatars.com/api/?name=<%= convo.name %>&background=CC2936&color=fff&size=64';">
                                         <% } %>
                                             <% if (convo.unreadCount> 0) { %>
                                                 <span class="unread-dot"></span>

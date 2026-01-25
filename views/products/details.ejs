@@ -41,7 +41,8 @@
                             <p class="text-muted" style="font-size: 0.9em;">(Contact hidden)</p>
                         </div>
                         <% } else if (product.user) { %>
-                            <img src="/uploads/<%= product.user.avatar || 'default-avatar.png' %>" alt="Seller">
+                            <img src="/uploads/<%= product.user.avatar || 'default-avatar.png' %>" alt="Seller"
+                                onerror="this.onerror=null;this.src='https://ui-avatars.com/api/?name=<%= product.user.name %>&background=CC2936&color=fff&size=64';">
                             <div>
                                 <p>Seller: <strong>
                                         <%= product.user.name %>

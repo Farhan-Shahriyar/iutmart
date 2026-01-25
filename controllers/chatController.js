@@ -102,7 +102,7 @@ exports.getConversations = async (req, res) => {
                         product: "$product"
                     },
                     lastMessage: { $first: "$content" },
-                    lastSenderId: { $first: "$sender" }, // Capture sender of last message
+                    lastSenderId: { $first: "$sender" },
                     timestamp: { $first: "$timestamp" },
                     unreadCount: {
                         $sum: {
@@ -138,11 +138,11 @@ exports.getConversations = async (req, res) => {
                     _id: 0,
                     userId: "$userInfo._id",
                     name: "$userInfo.name",
-                    studentId: "$userInfo.studentId", // Get Student ID
+                    studentId: "$userInfo.studentId",
                     avatar: "$userInfo.avatar",
                     productId: "$productInfo._id",
                     productTitle: "$productInfo.title",
-                    productSellerId: "$productInfo.user", // Get Seller ID from product
+                    productSellerId: "$productInfo.user",
                     productImage: { $arrayElemAt: ["$productInfo.images", 0] },
                     isAnonymous: "$productInfo.isAnonymous",
                     lastMessage: 1,
@@ -160,37 +160,36 @@ exports.getConversations = async (req, res) => {
         const formattedConversations = conversations.map(convo => {
             const isMyProduct = convo.productSellerId && convo.productSellerId.toString() === req.user.id;
 
-            // Default: Show the other user's real info
             let displayName = convo.name;
             let displayAvatar = convo.avatar;
-            let displayId = convo.studentId; // Ensure studentId is projected in aggregation
+            let displayId = convo.studentId;
 
-            // Logic:
-            // 1. If I am the Seller (isMyProduct is true) -> I am chatting with a Buyer.
-            //    Buyer is never anonymous. Show their Real Name & ID.
-
-            // 2. If I am the Buyer (isMyProduct is false) -> I am chatting with the Seller.
-            //    If Product is Anonymous -> Hide Seller Name/ID. Show "Anonymous Seller".
+            // Logic for Anonymous Sellers
+            let showAsAnonymous = false;
 
             if (!isMyProduct && convo.isAnonymous) {
+                // I am Buyer, Product is Anonymous -> Seller is Anonymous
+                showAsAnonymous = true;
+
                 displayName = "Anonymous Seller";
-                displayAvatar = "default-avatar.png"; // Use default for anonymous
-                displayId = null; // Hide ID
+                displayAvatar = "default-avatar.png";
+                displayId = null;
             }
 
             return {
                 ...convo,
                 name: displayName,
                 avatar: displayAvatar,
-                studentId: displayId // Pass processed ID to view
+                studentId: displayId,
+                isAnonymous: showAsAnonymous // Override DB flag with view logic
             };
         });
 
+        // --- FIX: Added the missing res.render call here ---
         res.render('chat/inbox', {
-            title: 'Messages',
-            user: req.user,
             conversations: formattedConversations
         });
+
     } catch (err) {
         console.error(err);
         res.redirect('/dashboard');

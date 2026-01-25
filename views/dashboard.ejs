@@ -1,16 +1,6 @@
 <%- include('partials/header') %>
 
     <div class="container fade-in">
-        <div class="section-header" style="margin-top: 2rem;">
-            <div class="dashboard-header">
-                <h1>Welcome back, <%= user.name.replace(/\s*\d{9}$/, '' ) %>!</h1>
-                <% if(user.studentId) { %>
-                    <p class="student-id-badge"><i class="fas fa-id-card"></i> ID: <%= user.studentId %>
-                    </p>
-                    <% } %>
-            </div>
-        </div>
-
         <div class="dashboard-grid">
             <aside class="sidebar">
                 <h3 style="margin-bottom: 1.5rem; font-size: 1.1rem; color: var(--text-light);">Menu</h3>
