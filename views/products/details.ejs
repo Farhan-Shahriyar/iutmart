@@ -1,0 +1,94 @@
+<%- include('../partials/header') %>
+
+    <div class="container product-details-page fade-in">
+        <div class="details-grid">
+            <div class="image-gallery">
+                <% if (product.images && product.images.length> 0) { %>
+                    <div class="main-image">
+                        <img src="<%= product.images[0] %>" id="currentImage" alt="<%= product.title %>">
+                    </div>
+                    <div class="thumbnail-list">
+                        <% product.images.forEach((img, index)=> { %>
+                            <img src="<%= img %>" onclick="document.getElementById('currentImage').src='<%= img %>'"
+                                class="thumb" alt="Thumbnail <%= index + 1 %>">
+                            <% }) %>
+                    </div>
+                    <% } else { %>
+                        <div class="main-image">
+                            <img src="/images/no-image.png" alt="No Image">
+                        </div>
+                        <% } %>
+            </div>
+
+            <div class="product-info-box">
+                <h1>
+                    <%= product.title %>
+                </h1>
+
+                <p class="category">
+                    <i class="fas fa-tag"></i>
+                    <%= product.category %>
+                </p>
+
+                <h2 class="price">৳ <%= product.price %>
+                </h2>
+
+                <div class="seller-card">
+                    <% if (product.isAnonymous) { %>
+                        <img src="/images/default-avatar.png" alt="Anonymous Seller">
+                        <div>
+                            <p>Seller: <strong>Anonymous Seller</strong></p>
+                            <p class="text-muted" style="font-size: 0.9em;">(Contact hidden)</p>
+                        </div>
+                        <% } else if (product.user) { %>
+                            <img src="/uploads/<%= product.user.avatar || 'default-avatar.png' %>" alt="Seller">
+                            <div>
+                                <p>Seller: <strong>
+                                        <%= product.user.name %>
+                                    </strong></p>
+                                <% if (product.user.contactNumber) { %>
+                                    <p class="contact">
+                                        <i class="fas fa-phone"></i>
+                                        <%= product.user.contactNumber %>
+                                    </p>
+                                    <% } %>
+                            </div>
+                            <% } else { %>
+                                <img src="/images/default-avatar.png" alt="Unknown Seller">
+                                <div>
+                                    <p>Seller: <strong>Unknown (Account Deleted)</strong></p>
+                                </div>
+                                <% } %>
+                </div>
+
+                <div class="description">
+                    <h3>Description</h3>
+                    <p>
+                        <%= product.description %>
+                    </p>
+                </div>
+
+                <div class="actions">
+                    <% if (user && product.user && user._id.toString()===product.user._id.toString()) { %>
+                        <form action="/products/<%= product._id %>/delete" method="POST"
+                            onsubmit="return confirm('Are you sure you want to delete this listing?')">
+                            <button class="btn btn-danger btn-block">Delete Listing</button>
+                        </form>
+                        <% } else if (user) { %>
+                            <% if (product.user) { %>
+                                <a href="/chat/start/<%= product.user._id %>?productId=<%= product._id %>"
+                                    class="btn btn-primary btn-block">
+                                    <i class="fas fa-comment"></i> Chat with Seller
+                                </a>
+                                <% } else { %>
+                                    <button class="btn btn-secondary btn-block" disabled>Seller Unavailable</button>
+                                    <% } %>
+                                        <% } else { %>
+                                            <a href="/auth/login" class="btn btn-secondary btn-block">Login to Buy</a>
+                                            <% } %>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <%- include('../partials/footer') %>

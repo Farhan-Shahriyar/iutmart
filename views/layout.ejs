@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>
+        <%= typeof title !='undefined' ? title : 'IUT Marketplace' %>
+    </title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+
+<body>
+    <nav class="navbar">
+        <div class="container nav-container">
+            <a href="/" class="brand">IUT Marketplace</a>
+            <ul class="nav-links">
+                <li><a href="/products">Browse</a></li>
+                <% if (user) { %>
+                    <li><a href="/products/create" class="btn-primary">Sell Item</a></li>
+                    <li><a href="/dashboard">Dashboard</a></li>
+                    <li><a href="/auth/logout">Logout</a></li>
+                    <% } else { %>
+                        <li><a href="/auth/login">Login</a></li>
+                        <li><a href="/auth/register">Register</a></li>
+                        <% } %>
+            </ul>
+        </div>
+    </nav>
+
+    <div class="container main-content">
+        <%- body %>
+    </div>
+
+    <footer>
+        <p>&copy; 2024 IUT Marketplace. Secure & Exclusive.</p>
+    </footer>
+</body>
+
+</html>

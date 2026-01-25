@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>
+        <%= typeof title !='undefined' ? title : 'IUT Marketplace' %>
+    </title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+
+<body>
+    <nav class="navbar">
+        <div class="container nav-container">
+            <a href="/" class="brand">
+                <i class="fas fa-store"></i> IUT Market
+            </a>
+            <ul class="nav-links">
+                <li><a href="/products">Browse</a></li>
+                <% if (user) { %>
+                    <li><a href="/products/create" class="btn-nav-action"><i class="fas fa-plus"></i> Sell</a></li>
+                    <li>
+                        <a href="/chat" class="nav-btn" title="Messages">
+                            <div class="icon-wrapper">
+                                <i class="fas fa-envelope"></i>
+                                <% if (locals.unreadCount && locals.unreadCount> 0) { %>
+                                    <span class="nav-badge">
+                                        <%= unreadCount %>
+                                    </span>
+                                    <% } %>
+                            </div>
+                            <span>Messages</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#" onclick="openProfileModal(event)" class="nav-profile">
+                            <img src="/uploads/<%= user.avatar || 'default-avatar.png' %>" class="nav-avatar"
+                                alt="Avatar">
+                            <span>
+                                <%= user.name.replace(/\s*\d{9}$/, '' ).split(' ')[0] %></span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="/auth/logout" class="nav-btn logout-btn" title="Logout">
+                            <i class="fas fa-sign-out-alt"></i>
+                            <span>Logout</span>
+                        </a>
+                    </li>
+                <% } else { %>
+                    <li><a href="/auth/login">Login</a></li>
+                    <li><a href="/auth/register" class="btn-nav-action">Join</a></li>
+                <% } %>
+            </ul>
+        </div>
+    </nav>
+    <div class="main-wrapper">
+
+    <!-- Profile Modal -->
+    <% if (user) { %>
+    <div id="profileModal" class="modal-backdrop">
+        <div class="modal-card fade-in-up">
+            <button class="modal-close" onclick="closeProfileModal()">&times;</button>
+            
+            <div class="modal-header">
+                <h3>My Profile</h3>
+            </div>
+            
+            <div class="modal-body profile-view">
+                <div class="profile-avatar-section">
+                    <form action="/auth/update-avatar" method="POST" enctype="multipart/form-data" id="avatarForm">
+                        <div class="avatar-wrapper">
+                            <img src="/uploads/<%= user.avatar || ' default-avatar.png' %>" alt="Profile"
+                                    id="modalAvatarPreview">
+                                    <label for="avatarInput" class="avatar-edit-btn" title="Change Photo">
+                                        <i class="fas fa-camera"></i>
+                                    </label>
+                                    <input type="file" name="avatar" id="avatarInput" accept="image/*" hidden
+                                        onchange="document.getElementById('avatarForm').submit()">
+        </div>
+        </form>
+        <% if (user.avatar) { %>
+            <form action="/auth/remove-avatar" method="POST" style="margin-top: 10px;">
+                <button type="submit" class="btn-text-danger" title="Remove Photo">Remove Photo</button>
+            </form>
+            <% } %>
+                </div>
+
+                <div class="profile-details">
+                    <div class="detail-group">
+                        <label>Full Name</label>
+                        <p class="value">
+                            <%= user.name %>
+                        </p>
+                        <!-- Extracted Name Logic if needed -->
+                    </div>
+
+                    <div class="detail-group">
+                        <label>Email</label>
+                        <p class="value">
+                            <%= user.email %>
+                        </p>
+                    </div>
+
+                    <div class="detail-group">
+                        <label>Student ID</label>
+                        <p class="value">
+                            <%= user.studentId || 'Not Set' %>
+                        </p>
+                    </div>
+
+                    <div class="detail-group">
+                        <label>Contact</label>
+                        <p class="value">
+                            <%= user.contactNumber || 'Not Set' %>
+                        </p>
+                    </div>
+                </div>
+                </div>
+
+                <div class="modal-footer">
+                    <a href="/auth/logout" class="btn btn-secondary btn-block">Logout</a>
+                </div>
+                </div>
+                </div>
+
+                <script>
+                    function openProfileModal(e) {
+                        e.preventDefault();
+                        document.getElementById('profileModal').style.display = 'flex';
+                    }
+
+                    function closeProfileModal() {
+                        document.getElementById('profileModal').style.display = 'none';
+                    }
+
+                    // Close on backdrop click
+                    window.onclick = function (event) {
+                        const modal = document.getElementById('profileModal');
+                        if (event.target == modal) {
+                            modal.style.display = "none";
+                        }
+                    }
+                </script>
+                <% } %>

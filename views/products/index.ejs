@@ -1,0 +1,59 @@
+<%- include('../partials/header') %>
+
+    <div class="container fade-in">
+        <div class="section-header">
+            <h2>Latest Listings</h2>
+            <div class="filters">
+            </div>
+        </div>
+
+        <% if (products.length===0) { %>
+            <div class="empty-state">
+                <i class="fas fa-box-open"></i>
+                <p>No products available right now.</p>
+                <a href="/products/create" class="btn btn-secondary">Be the first to sell!</a>
+            </div>
+            <% } else { %>
+                <div class="product-grid">
+                    <% products.forEach(product=> { %>
+                        <div class="product-card">
+                            <a href="/products/<%= product._id %>" class="card-link">
+                                <div class="card-image">
+                                    <% if (product.images && product.images.length> 0) { %>
+                                        <img src="<%= product.images[0] %>" alt="<%= product.title %>">
+                                        <% } else { %>
+                                            <img src="/css/no-image.png" alt="No Image">
+                                            <% } %>
+                                                <span class="category-tag">
+                                                    <%= product.category %>
+                                                </span>
+                                </div>
+                                <div class="card-info">
+                                    <h3>
+                                        <%= product.title %>
+                                    </h3>
+                                    <p class="price">৳ <%= product.price %>
+                                    </p>
+                                    <div class="seller-info">
+                                        <small>By
+                                            <% if (product.isAnonymous) { %>
+                                                Anonymous
+                                                <% } else { %>
+                                                    <%= (product.user && product.user.name) ?
+                                                        product.user.name.split(' ')[0] : ' Unknown' %>
+                                                        <% } %>
+                                        </small>
+                                        <small>
+                                            <%= product.createdAt ? new Date(product.createdAt).toLocaleDateString()
+                                                : '' %>
+                                        </small>
+                                    </div>
+                                </div>
+                            </a>
+                        </div>
+                        <% }) %>
+                </div>
+                <% } %>
+    </div>
+
+    <%- include('../partials/footer') %>

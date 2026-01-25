@@ -1,0 +1,85 @@
+<%- include('partials/header') %>
+
+    <div class="hero-section">
+        <div class="container hero-content">
+            <h1>Welcome to <span style="color: var(--primary);">IUT Marketplace</span></h1>
+            <p class="lead">The exclusive platform for IUTians to buy, sell, and connect.</p>
+            <% if (!user) { %>
+                <div class="hero-actions">
+                    <a href="/auth/login" class="btn btn-secondary">Login</a>
+                    <a href="/auth/register" class="btn btn-primary">Join Now</a>
+                </div>
+                <% } %>
+        </div>
+    </div>
+
+    <div class="container features-section fade-in">
+        <div class="feature-card">
+            <i class="fas fa-user-shield"></i>
+            <h3>Verified Students</h3>
+            <p>Exclusive access for @iut-dhaka.edu emails only.</p>
+        </div>
+        <div class="feature-card">
+            <i class="fas fa-bolt"></i>
+            <h3>Fast & Secure</h3>
+            <p>Real-time chat and secure authentication.</p>
+        </div>
+        <div class="feature-card">
+            <i class="fas fa-hand-holding-usd"></i>
+            <h3>Easy Trading</h3>
+            <p>List your items in seconds and find great deals.</p>
+        </div>
+    </div>
+
+    <style>
+        .hero-section {
+            text-align: center;
+            padding: 5rem 0;
+            background: radial-gradient(circle at center, rgba(255, 255, 255, 0.8), transparent);
+        }
+
+        .hero-content h1 {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+        }
+
+        .hero-content .lead {
+            font-size: 1.2rem;
+            color: #666;
+            margin-bottom: 2rem;
+        }
+
+        .hero-actions {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+        }
+
+        .features-section {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+            margin: 4rem auto;
+        }
+
+        .feature-card {
+            background: var(--glass-bg);
+            border: 1px solid var(--glass-border);
+            padding: 2rem;
+            border-radius: 12px;
+            text-align: center;
+            transition: transform 0.3s;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .feature-card i {
+            font-size: 2.5rem;
+            color: var(--primary);
+            margin-bottom: 1rem;
+        }
+    </style>
+
+    <%- include('partials/footer') %>

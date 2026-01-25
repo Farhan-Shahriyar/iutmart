@@ -1,0 +1,83 @@
+<%- include('partials/header') %>
+
+    <div class="container fade-in">
+        <div class="section-header" style="margin-top: 2rem;">
+            <div class="dashboard-header">
+                <h1>Welcome back, <%= user.name.replace(/\s*\d{9}$/, '' ) %>!</h1>
+                <% if(user.studentId) { %>
+                    <p class="student-id-badge"><i class="fas fa-id-card"></i> ID: <%= user.studentId %>
+                    </p>
+                    <% } %>
+            </div>
+        </div>
+
+        <div class="dashboard-grid">
+            <aside class="sidebar">
+                <h3 style="margin-bottom: 1.5rem; font-size: 1.1rem; color: var(--text-light);">Menu</h3>
+                <ul class="sidebar-menu">
+                    <li>
+                        <a href="/products/create" class="sidebar-btn">
+                            <i class="fas fa-plus-circle"></i> Sell Item
+                        </a>
+                    </li>
+                    <li>
+                        <a href="/products" class="sidebar-btn">
+                            <i class="fas fa-shopping-bag"></i> Browse Market
+                        </a>
+                    </li>
+                    <li>
+                        <a href="/chat" class="sidebar-btn">
+                            <i class="fas fa-envelope"></i> Messages
+                        </a>
+                    </li>
+                    <li style="margin-top: 2rem; border-top: 1px solid #eee; padding-top: 1rem;">
+                        <a href="/auth/logout" class="sidebar-btn" style="color: #dc3545;">
+                            <i class="fas fa-sign-out-alt"></i> Logout
+                        </a>
+                    </li>
+                </ul>
+            </aside>
+
+            <main>
+                <h3>My Listings</h3>
+                <% if (typeof myProducts !==' undefined' && myProducts.length> 0) { %>
+                    <div class="product-grid">
+                        <% myProducts.forEach(product=> { %>
+                            <div class="product-card">
+                                <a href="/products/<%= product._id %>" class="card-link">
+                                    <div class="card-image">
+                                        <% if (product.images && product.images.length> 0) { %>
+                                            <img src="<%= product.images[0] %>" alt="<%= product.title %>">
+                                            <% } else { %>
+                                                <img src="/images/no-image.png" alt="No Image">
+                                                <% } %>
+                                                    <div class="card-overlay">
+                                                        <span>View Details</span>
+                                                    </div>
+                                    </div>
+                                    <div class="card-info">
+                                        <h3>
+                                            <%= product.title %>
+                                        </h3>
+                                        <p class="price">৳ <%= product.price %>
+                                        </p>
+                                        <div class="card-actions">
+                                            <form action="/products/<%= product._id %>/delete" method="POST"
+                                                onsubmit="return confirm('Delete this item?')">
+                                                <button class="btn-icon delete" title="Delete"><i
+                                                        class="fas fa-trash"></i></button>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </a>
+                            </div>
+                            <% }) %>
+                    </div>
+                    <% } else { %>
+                        <p>You haven't listed any items yet.</p>
+                        <% } %>
+            </main>
+        </div>
+    </div>
+
+    <%- include('partials/footer') %>

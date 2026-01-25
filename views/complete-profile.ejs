@@ -1,0 +1,95 @@
+<%- include('partials/header') %>
+
+    <div class="auth-container fade-in">
+        <div class="auth-header">
+            <h2>Complete Your Profile</h2>
+            <p>Please provide your university details to continue.</p>
+        </div>
+
+        <% if (locals.error && locals.error.length> 0) { %>
+            <div class="alert">
+                <%= error %>
+            </div>
+            <% } %>
+
+                <form action="/auth/complete-profile" method="POST" enctype="multipart/form-data">
+
+                    <div class="avatar-upload-container">
+                        <div class="avatar-upload" onclick="document.getElementById('avatarInput').click()">
+                            <!-- Default Placeholder Icon -->
+                            <div class="avatar-placeholder" id="avatarPlaceholder"
+                                style="display: <%= user.avatar && user.avatar !== 'default-avatar.png' ? 'none' : 'flex' %>;">
+                                <i class="fas fa-camera"></i>
+                            </div>
+
+                            <!-- Preview Image -->
+                            <% let avatarSrc='' ; if (user.avatar && user.avatar !=='default-avatar.png' ) { if
+                                (user.avatar.startsWith('http')) { avatarSrc=user.avatar; } else { avatarSrc='/uploads/'
+                                + user.avatar; } } %>
+                                <img src="<%= avatarSrc %>" id="avatarPreview" class="avatar-preview" alt=""
+                                    style="display: <%= avatarSrc ? 'block' : 'none' %>;">
+
+                                <!-- Hover Overlay -->
+                                <div class="avatar-overlay">
+                                    <i class="fas fa-camera"></i>
+                                </div>
+
+                                <input type="file" name="avatar" id="avatarInput" accept="image/*"
+                                    style="display: none;" onchange="previewImage(this)">
+                        </div>
+                        <button type="button" class="avatar-remove" id="removeBtn" onclick="removeImage()"
+                            style="display: <%= user.avatar && user.avatar !== 'default-avatar.png' ? 'flex' : 'none' %>;">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    </div>
+                    <div class="form-group">
+                        <label>Student ID</label>
+                        <input type="text" name="studentId" required placeholder="e.g. 190041142" pattern="\d{9}"
+                            title="Must be exactly 9 digits">
+                    </div>
+
+                    <div class="form-group">
+                        <label>Contact Number (BD)</label>
+                        <input type="tel" name="contactNumber" required placeholder="e.g. 01700000000"
+                            pattern="(?:\+88|88)?(01[3-9]\d{8})" title="e.g. 017xxxxxxxx">
+                    </div>
+
+                    <button type="submit" class="btn btn-primary btn-block">
+                        <i class="fas fa-check-circle"></i> Complete Setup
+                    </button>
+                </form>
+
+                <script>
+                    function previewImage(input) {
+                        if (input.files && input.files[0]) {
+                            const reader = new FileReader();
+                            reader.onload = function (e) {
+                                const preview = document.getElementById('avatarPreview');
+                                const placeholder = document.getElementById('avatarPlaceholder');
+                                const removeBtn = document.getElementById('removeBtn');
+
+                                preview.src = e.target.result;
+                                preview.style.display = 'block';
+                                placeholder.style.display = 'none';
+                                removeBtn.style.display = 'flex';
+                            }
+                            reader.readAsDataURL(input.files[0]);
+                        }
+                    }
+
+                    function removeImage() {
+                        const input = document.getElementById('avatarInput');
+                        const preview = document.getElementById('avatarPreview');
+                        const placeholder = document.getElementById('avatarPlaceholder');
+                        const removeBtn = document.getElementById('removeBtn');
+
+                        input.value = ''; // Clear input
+                        preview.src = '';
+                        preview.style.display = 'none';
+                        placeholder.style.display = 'flex';
+                        removeBtn.style.display = 'none';
+                    }
+                </script>
+    </div>
+
+    <%- include('partials/footer') %>
