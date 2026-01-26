@@ -1,58 +1,147 @@
 <%- include('../partials/header') %>
 
-    <div class="container fade-in">
-        <div class="section-header">
-            <h2>Latest Listings</h2>
-            <div class="filters">
+    <div class="container mx-auto px-4 py-8">
+        <!-- Header -->
+        <div class="flex items-center justify-between mb-8 border-b border-border pb-4">
+            <div>
+                <h2 class="text-2xl font-bold text-white tracking-tight flex items-center space-x-2">
+                    <i class="fas fa-layer-group text-action text-lg"></i>
+                    <span>MARKET ASSETS</span>
+                </h2>
+                <p class="text-text-secondary text-xs font-mono mt-1">LIVE FEED :: <%= products.length %> ASSETS LISTED
+                </p>
+            </div>
+
+            <div class="bg-surface rounded-lg p-1 flex space-x-1 border border-border">
+                <button
+                    class="px-4 py-1.5 rounded text-xs font-bold bg-bg text-white border border-border shadow-sm">GRID</button>
+                <button class="px-4 py-1.5 rounded text-xs font-bold text-text-secondary hover:text-white">LIST</button>
             </div>
         </div>
 
         <% if (products.length===0) { %>
-            <div class="empty-state">
-                <i class="fas fa-box-open"></i>
-                <p>No products available right now.</p>
-                <a href="/products/create" class="btn btn-secondary">Be the first to sell!</a>
+            <div
+                class="flex flex-col items-center justify-center py-20 bg-surface border border-dashed border-border rounded-lg">
+                <i class="fas fa-box-open text-6xl text-border mb-4"></i>
+                <p class="text-text-secondary font-mono text-lg mb-4">NO ASSETS FOUND IN LIQUIDITY POOL</p>
+                <a href="/products/create"
+                    class="px-6 py-2 bg-action text-white font-mono font-bold text-sm hover:bg-blue-600 rounded">INITIATE
+                    IPO</a>
             </div>
             <% } else { %>
-                <div class="product-grid">
+
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
                     <% products.forEach(product=> { %>
-                        <div class="product-card">
-                            <a href="/products/<%= product._id %>" class="card-link">
-                                <div class="card-image">
-                                    <% if (product.images && product.images.length> 0) { %>
-                                        <img src="<%= product.images[0] %>" alt="<%= product.title %>">
-                                        <% } else { %>
-                                            <img src="/css/no-image.png" alt="No Image">
-                                            <% } %>
-                                                <span class="category-tag">
-                                                    <%= product.category %>
-                                                </span>
-                                </div>
-                                <div class="card-info">
-                                    <h3>
-                                        <%= product.title %>
-                                    </h3>
-                                    <p class="price">৳ <%= product.price %>
-                                    </p>
-                                    <div class="seller-info">
-                                        <small>By
-                                            <% if (product.isAnonymous) { %>
-                                                Anonymous
-                                                <% } else { %>
-                                                    <%= (product.user && product.user.name) ?
-                                                        product.user.name.split(' ')[0] : ' Unknown' %>
-                                                        <% } %>
-                                        </small>
-                                        <small>
-                                            <%= product.createdAt ? new Date(product.createdAt).toLocaleDateString()
-                                                : '' %>
-                                        </small>
+                        <!-- Asset Card -->
+                        <div
+                            class="bg-surface border border-border rounded-lg overflow-hidden group hover:border-action transition relative flex flex-col h-full">
+
+                            <!-- Asset Image -->
+                            <div class="w-full h-48 bg-bg relative overflow-hidden border-b border-border">
+                                <% if (product.images && product.images.length> 0) { %>
+                                    <img src="<%= product.images[0] %>" alt="<%= product.title %>"
+                                        class="w-full h-full object-cover opacity-80 group-hover:opacity-100 transition duration-500 group-hover:scale-105">
+                                    <% } else { %>
+                                        <div
+                                            class="w-full h-full flex items-center justify-center bg-bg text-text-secondary">
+                                            <i class="fas fa-image text-3xl"></i>
+                                        </div>
+                                        <% } %>
+
+                                            <!-- Sector Tag -->
+                                            <div
+                                                class="absolute top-2 left-2 bg-black/80 backdrop-blur-sm border border-border px-2 py-1 rounded text-[10px] font-mono text-text-secondary">
+                                                SECTOR: <%= product.category.toUpperCase() %>
+                                            </div>
+                            </div>
+
+                            <div class="p-4 flex-grow flex flex-col justify-between"
+                                x-data="{ id: '<%= product._id %>' }">
+                                <div>
+                                    <div class="flex justify-between items-start mb-2">
+                                        <h3 class="text-white font-bold text-base truncate pr-2 w-3/4">
+                                            <%= product.title %>
+                                        </h3>
+                                        <span class="w-16">
+                                            <canvas id="spark-<%= product._id %>" height="30"></canvas>
+                                        </span>
+                                    </div>
+
+                                    <!-- Price Display -->
+                                    <div class="flex items-baseline space-x-2 mb-4">
+                                        <span class="text-text-secondary text-xs font-mono">LAST:</span>
+                                        <span class="text-xl font-mono text-bull font-bold">৳<%= product.price %></span>
+                                    </div>
+
+                                    <div
+                                        class="flex items-center space-x-2 text-[10px] text-text-secondary font-mono mb-4 border-t border-border pt-2">
+                                        <span class="flex items-center space-x-1">
+                                            <i class="fas fa-user-circle"></i>
+                                            <span>
+                                                <% if (product.isAnonymous) { %>
+                                                    TRADER_ANON
+                                                    <% } else { %>
+                                                        <%= (product.user && product.user.name) ?
+                                                            product.user.name.split(' ')[0].toUpperCase() : ' UNKNOWN'
+                                                            %>
+                                                            <% } %>
+                                            </span>
+                                        </span>
+                                        <span>•</span>
+                                        <span>VOL: HIGH</span>
                                     </div>
                                 </div>
-                            </a>
+
+                                <!-- Trading Actions -->
+                                <div class="grid grid-cols-2 gap-2 mt-auto">
+                                    <a href="/products/<%= product._id %>"
+                                        class="flex items-center justify-center bg-bull/10 border border-bull/20 hover:bg-bull hover:text-black text-bull text-xs font-mono font-bold py-2 rounded transition">
+                                        LONG POSITION
+                                    </a>
+                                    <button
+                                        class="flex items-center justify-center bg-action/10 border border-action/20 hover:bg-action hover:text-white text-action text-xs font-mono font-bold py-2 rounded transition">
+                                        HOLD
+                                    </button>
+                                </div>
+                            </div>
                         </div>
                         <% }) %>
                 </div>
+
+                <!-- Sparklines Script -->
+                <script>
+                    document.addEventListener('DOMContentLoaded', () => {
+                        const products = <% - JSON.stringify(products) %>;
+                        products.forEach(p => {
+                            const ctx = document.getElementById(`spark-${p._id}`)?.getContext('2d');
+                            if (ctx) {
+                                // Generate random data for sparkline
+                                const data = Array.from({ length: 10 }, () => Math.floor(Math.random() * 100));
+
+                                new Chart(ctx, {
+                                    type: 'line',
+                                    data: {
+                                        labels: Array(10).fill(''),
+                                        datasets: [{
+                                            data: data,
+                                            borderColor: '#00e396',
+                                            borderWidth: 1.5,
+                                            pointRadius: 0,
+                                            fill: false,
+                                            tension: 0.4
+                                        }]
+                                    },
+                                    options: {
+                                        responsive: true,
+                                        maintainAspectRatio: false,
+                                        plugins: { legend: { display: false }, tooltip: { enabled: false } },
+                                        scales: { x: { display: false }, y: { display: false } }
+                                    }
+                                });
+                            }
+                        });
+                    });
+                </script>
                 <% } %>
     </div>
 

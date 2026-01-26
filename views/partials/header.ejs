@@ -5,150 +5,163 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>
-        <%= typeof title !='undefined' ? title : 'IUT Marketplace' %>
+        <%= typeof title !='undefined' ? title : 'THE TERMINAL' %> | IUT MART
     </title>
+    
+    <!-- Google Fonts: Inter & IBM Plex Mono -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        bg: '#0b0e11',
+                        surface: '#1e222d',
+                        border: '#2a2e39',
+                        bull: '#00e396',
+                        bear: '#ff007a',
+                        action: '#2962ff',
+                        text: {
+                            primary: '#ffffff',
+                            secondary: '#b2b5be'
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        mono: ['IBM Plex Mono', 'monospace'],
+                    }
+                }
+            }
+        }
+    </script>
+
+    <!-- Alpine.js -->
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
     <link rel="stylesheet" href="/css/style.css">
 </head>
 
-<body>
-    <nav class="navbar">
-        <div class="container nav-container">
-            <a href="/" class="brand">
-                <i class="fas fa-store"></i> IUT Market
+<body class="bg-bg text-text-primary font-sans antialiased min-h-screen flex flex-col">
+
+    <!-- Ticker Tape -->
+    <div class="bg-black border-b border-border h-8 overflow-hidden flex items-center" x-data="{
+        items: [
+            { name: 'USED KETTLE', change: 2.4 },
+            { name: 'CALCULATOR', change: -0.8 },
+            { name: 'LAB COAT (M)', change: 12.0 },
+            { name: 'DORM FAN', change: 5.1 },
+            { name: 'DESK LAMP', change: -3.2 },
+            { name: 'ROUTER', change: 0.5 },
+            { name: 'MATTRESS', change: -1.5 },
+            { name: 'CYCLE', change: 8.4 }
+        ]
+    }">
+        <div class="whitespace-nowrap animate-marquee flex space-x-8 px-4 font-mono text-xs">
+            <!-- Duplicate items for seamless loop -->
+            <template x-for="i in 4">
+                <span class="flex space-x-8">
+                    <template x-for="item in items">
+                        <span class="flex items-center space-x-2">
+                            <span x-text="item.name" class="text-text-secondary"></span>
+                            <span :class="item.change >= 0 ? 'text-bull' : 'text-bear'" x-text="(item.change >= 0 ? '▲ +' : '▼ ') + item.change + '%'"></span>
+                        </span>
+                    </template>
+                </span>
+            </template>
+        </div>
+    </div>
+
+    <!-- Navigation -->
+    <nav class="bg-surface border-b border-border sticky top-0 z-50">
+        <div class="container mx-auto px-4 h-16 flex items-center justify-between">
+            <!-- Brand -->
+            <a href="/" class="flex items-center space-x-3 group">
+                <div class="w-8 h-8 bg-action rounded flex items-center justify-center text-white font-bold text-xl group-hover:bg-blue-600 transition">
+                    T
+                </div>
+                <div class="flex flex-col">
+                    <span class="text-lg font-bold tracking-tight">THE TERMINAL</span>
+                    <span class="text-[10px] text-text-secondary font-mono tracking-widest">IUT MART :: V2.0</span>
+                </div>
             </a>
-            <ul class="nav-links">
-                <li><a href="/products">Browse</a></li>
+
+            <!-- Nav Links -->
+            <div class="hidden md:flex items-center space-x-1">
+                <a href="/products" class="px-4 py-2 text-sm font-medium text-text-secondary hover:text-white hover:bg-border/50 rounded transition">MARKETS</a>
+                
                 <% if (user) { %>
-                    <li><a href="/products/create" class="btn-nav-action"><i class="fas fa-plus"></i> Sell</a></li>
-                    <li>
-                        <a href="/chat" class="nav-btn" title="Messages">
-                            <div class="icon-wrapper">
-                                <i class="fas fa-envelope"></i>
-                                <% if (locals.unreadCount && locals.unreadCount> 0) { %>
-                                    <span class="nav-badge">
-                                        <%= unreadCount %>
-                                    </span>
-                                    <% } %>
-                            </div>
-                            <span>Messages</span>
-                        </a>
-                    </li>
-                    <li>
-                        <a href="#" onclick="openProfileModal(event)" class="nav-profile">
-                            <img src="/uploads/<%= user.avatar || 'default-avatar.png' %>" class="nav-avatar"
-                                alt="Avatar"
-                                onerror="this.onerror=null;this.src='https://ui-avatars.com/api/?name=<%= user.name %>&background=CC2936&color=fff&size=64';">
-                            <span>Profile</span>
-                        </a>
-                    </li>
-                    <li>
-                        <a href="/auth/logout" class="nav-btn logout-btn" title="Logout">
-                            <i class="fas fa-sign-out-alt"></i>
-                            <span>Logout</span>
-                        </a>
-                    </li>
-                    <% } else { %>
-                        <li><a href="/auth/login">Login</a></li>
-                        <li><a href="/auth/register" class="btn-nav-action">Join</a></li>
+                    <a href="/products/create" class="px-4 py-2 text-sm font-medium text-text-secondary hover:text-white hover:bg-border/50 rounded transition flex items-center space-x-2">
+                        <i class="fas fa-plus text-xs"></i>
+                        <span>IPO</span>
+                    </a>
+                    <a href="/chat" class="px-4 py-2 text-sm font-medium text-text-secondary hover:text-white hover:bg-border/50 rounded transition relative">
+                        <span>COMMS</span>
+                        <% if (locals.unreadCount && locals.unreadCount > 0) { %>
+                            <span class="absolute top-1 right-2 w-2 h-2 bg-action rounded-full animate-pulse"></span>
                         <% } %>
-            </ul>
+                    </a>
+                    
+                    <!-- Profile Dropdown -->
+                    <div class="relative ml-4" x-data="{ open: false }">
+                        <button @click="open = !open" @click.outside="open = false" class="flex items-center space-x-2 focus:outline-none">
+                            <img src="/uploads/<%= user.avatar || 'default-avatar.png' %>" class="w-8 h-8 rounded border border-border bg-black object-cover"
+                                onerror="this.onerror=null;this.src='https://ui-avatars.com/api/?name=<%= user.name %>&background=0b0e11&color=fff&size=64';">
+                            <div class="flex flex-col items-start">
+                                <span class="text-xs font-mono text-white"><%= user.name.split(' ')[0] %></span>
+                                <span class="text-[10px] text-bull font-mono">ONLINE</span>
+                            </div>
+                            <i class="fas fa-chevron-down text-xs text-text-secondary"></i>
+                        </button>
+
+                        <div x-show="open" 
+                             x-transition:enter="transition ease-out duration-100"
+                             x-transition:enter-start="transform opacity-0 scale-95"
+                             x-transition:enter-end="transform opacity-100 scale-100"
+                             x-transition:leave="transition ease-in duration-75"
+                             x-transition:leave-start="transform opacity-100 scale-100"
+                             x-transition:leave-end="transform opacity-0 scale-95"
+                             class="absolute right-0 mt-2 w-56 bg-surface border border-border rounded shadow-xl py-1 z-50">
+                            
+                            <div class="px-4 py-3 border-b border-border">
+                                <p class="text-sm text-white font-medium truncate"><%= user.name %></p>
+                                <p class="text-xs text-text-secondary font-mono truncate">ID: <%= user.studentId || 'N/A' %></p>
+                            </div>
+
+                            <a href="/dashboard" class="block px-4 py-2 text-sm text-text-secondary hover:bg-bg hover:text-white">Portfolio Manager</a>
+                            <a href="/auth/logout" class="block px-4 py-2 text-sm text-bear hover:bg-bg">Disconnect</a>
+                        </div>
+                    </div>
+
+                <% } else { %>
+                    <div class="flex items-center space-x-4 ml-4">
+                        <a href="/auth/login" class="text-sm font-medium text-text-secondary hover:text-white">LOGIN</a>
+                        <a href="/auth/register" class="px-4 py-1.5 text-sm font-bold bg-action hover:bg-blue-600 text-white rounded">JOIN TERMINAL</a>
+                    </div>
+                <% } %>
+            </div>
         </div>
     </nav>
-    <div class="main-wrapper">
-
-        <!-- Profile Modal (Professional ID Card) -->
-        <% if (user) { %>
-            <div id="profileModal" class="modal-backdrop">
-                <div class="modal-card profile-card-container fade-in-up">
-                    <button class="modal-close" style="color: white; z-index: 20;"
-                        onclick="closeProfileModal()">&times;</button>
-
-                    <div class="profile-card-header">
-                        <h3>Personal Details</h3>
-                    </div>
-
-                    <div class="profile-avatar-container" style="flex-direction: column; align-items: center;">
-                        <form action="/auth/update-avatar" method="POST" enctype="multipart/form-data" id="avatarForm"
-                            style="margin:0;">
-                            <div class="id-avatar-wrapper">
-                                <img src="/uploads/<%= user.avatar || ' default-avatar.png' %>" class="id-avatar"
-                                    alt="Profile" id="modalAvatarPreview"
-                                    onerror="this.onerror=null;this.src='https://ui-avatars.com/api/?name=<%= user.name %>&background=CC2936&color=fff&size=128';">
-                                <label for="avatarInput" class="id-edit-badge" title="Update Photo">
-                                    <i class="fas fa-camera" style="font-size: 14px;"></i>
-                                </label>
-                                <input type="file" name="avatar" id="avatarInput" accept="image/*" hidden
-                                    onchange="document.getElementById('avatarForm').submit()">
-                            </div>
-                        </form>
-                        <% if (user.avatar && user.avatar !=='default-avatar.png' ) { %>
-                            <form action="/auth/remove-avatar" method="POST" style="margin-top: 10px;">
-                                <button type="submit" class="btn-text-muted"
-                                    style="font-size: 0.8rem; color: #dc3545;">Remove
-                                    Photo</button>
-                            </form>
-                            <% } %>
-                    </div>
-
-                    <div class="profile-info-body">
-                        <h2 class="user-display-name">
-                            <%= user.name.replace(/\s*\d{9}$/, '' ) %>
-                        </h2>
-                        <div class="user-id-pill">ID: <%= user.studentId || 'N/A' %>
-                        </div>
-
-                        <div class="info-grid">
-                            <div class="info-row">
-                                <div class="info-icon"><i class="fas fa-envelope"></i></div>
-                                <div class="info-content">
-                                    <label>Email Address</label>
-                                    <span>
-                                        <%= user.email %>
-                                    </span>
-                                </div>
-                            </div>
-                            <div class="info-row">
-                                <div class="info-icon"><i class="fas fa-phone-alt"></i></div>
-                                <div class="info-content">
-                                    <label>Contact Number</label>
-                                    <span>
-                                        <%= user.contactNumber || 'Not Set' %>
-                                    </span>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="modal-footer-actions">
-
-                            <a href="/auth/logout" class="btn btn-logout btn-block">
-                                <i class="fas fa-sign-out-alt"></i> Log out
-                            </a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-
-            <script>
-                function openProfileModal(e) {
-                    e.preventDefault();
-                    document.getElementById('profileModal').style.display = 'flex';
-                }
-
-                function closeProfileModal() {
-                    document.getElementById('profileModal').style.display = 'none';
-                }
-
-                // Close on backdrop click
-                window.onclick = function (event) {
-                    const modal = document.getElementById('profileModal');
-                    if (event.target == modal) {
-                        modal.style.display = "none";
-                    }
-                }
-            </script>
-            <% } %>
+    
+    <div class="flex-grow">
+    
+    <style>
+        .animate-marquee {
+            display: flex;
+            animation: marquee 30s linear infinite;
+        }
+        @keyframes marquee {
+            0% { transform: translateX(0); }
+            100% { transform: translateX(-50%); }
+        }
+    </style>
