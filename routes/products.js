@@ -5,7 +5,8 @@ const {
     getProduct,
     createProductForm,
     createProduct,
-    deleteProduct
+    deleteProduct,
+    createLimitOrder
 } = require('../controllers/productController');
 const { protect } = require('../middleware/auth');
 const upload = require('../middleware/upload');
@@ -16,6 +17,7 @@ router.get('/', getProducts);
 // Protected routes
 router.get('/create', protect, createProductForm);
 router.post('/', protect, upload.array('images', 5), createProduct); // Allow up to 5 images
+router.post('/orders', protect, createLimitOrder);
 router.get('/:id', getProduct);
 
 // Delete handled via POST for simplicity in HTML forms (method override or JS fetch needed for DELETE)

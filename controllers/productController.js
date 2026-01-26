@@ -1,4 +1,5 @@
 const Product = require('../models/Product');
+const LimitOrder = require('../models/LimitOrder');
 const path = require('path');
 const fs = require('fs');
 
@@ -73,6 +74,33 @@ exports.createProduct = async (req, res) => {
             user: req.user.id
         });
 
+        // ---------------------------------------------------------
+        // LIMIT ORDER MATCHING PROTOCOL
+        // ---------------------------------------------------------
+        // Find active orders for this sector with maxPrice >= new product price
+        const matchingOrders = await LimitOrder.find({
+            sector: category,
+            maxPrice: { $gte: price },
+            sector: category,
+            maxPrice: { $gte: price },
+            status: 'ACTIVE',
+            user: { $ne: req.user.id } // Prevent self-matching (Wash Trading)
+        });
+
+        if (matchingOrders.length > 0) {
+            console.log(`[MARKET MAKER] Found ${matchingOrders.length} matching limit orders for ${title} (${category}) @ ${price}`);
+
+            // For MVP: Log matches and mark them as 'FILLED' to simulate execution
+            for (const order of matchingOrders) {
+                console.log(`>> FILLING ORDER ${order._id} for USER ${order.user} (Strike: ${order.maxPrice})`);
+                order.status = 'FILLED';
+                await order.save();
+
+                // TODO: Send notification to order.user
+            }
+        }
+        // ---------------------------------------------------------
+
         res.redirect('/dashboard');
     } catch (err) {
         console.error(err);
@@ -110,5 +138,27 @@ exports.deleteProduct = async (req, res) => {
     } catch (err) {
         console.error(err);
         res.redirect('/dashboard');
+    }
+};
+
+// @desc    Create Limit Order
+// @route   POST /products/orders
+// @access  Private
+exports.createLimitOrder = async (req, res) => {
+    try {
+        const { sector, maxPrice } = req.body;
+
+        await LimitOrder.create({
+            user: req.user.id,
+            sector,
+            maxPrice
+        });
+
+        // Use flash message if possible, or just redirect
+        // req.flash('success', 'Limit Order Placed'); 
+        res.redirect('/products');
+    } catch (err) {
+        console.error(err);
+        res.redirect('/products');
     }
 };

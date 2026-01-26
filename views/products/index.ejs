@@ -12,137 +12,201 @@
                 </p>
             </div>
 
-            <div class="bg-surface rounded-lg p-1 flex space-x-1 border border-border">
-                <button
-                    class="px-4 py-1.5 rounded text-xs font-bold bg-bg text-white border border-border shadow-sm">GRID</button>
-                <button class="px-4 py-1.5 rounded text-xs font-bold text-text-secondary hover:text-white">LIST</button>
-            </div>
+            <button
+                class="px-4 py-1.5 rounded text-xs font-bold bg-bg text-white border border-border shadow-sm">GRID</button>
+            <button class="px-4 py-1.5 rounded text-xs font-bold text-text-secondary hover:text-white">LIST</button>
         </div>
 
-        <% if (products.length===0) { %>
-            <div
-                class="flex flex-col items-center justify-center py-20 bg-surface border border-dashed border-border rounded-lg">
-                <i class="fas fa-box-open text-6xl text-border mb-4"></i>
-                <p class="text-text-secondary font-mono text-lg mb-4">NO ASSETS FOUND IN LIQUIDITY POOL</p>
-                <a href="/products/create"
-                    class="px-6 py-2 bg-action text-white font-mono font-bold text-sm hover:bg-blue-600 rounded">INITIATE
-                    IPO</a>
-            </div>
-            <% } else { %>
+        <div class="ml-4" x-data="{ open: false }">
+            <button @click="open = true"
+                class="px-6 py-1.5 rounded text-xs font-bold bg-action text-white hover:bg-blue-600 border border-border flex items-center space-x-2">
+                <i class="fas fa-ticket-alt"></i>
+                <span>TRADE TICKET</span>
+            </button>
 
-                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-                    <% products.forEach(product=> { %>
-                        <!-- Asset Card -->
-                        <div
-                            class="bg-surface border border-border rounded-lg overflow-hidden group hover:border-action transition relative flex flex-col h-full">
+            <!-- Limit Order Modal -->
+            <div x-show="open" style="display: none;" class="fixed inset-0 z-50 overflow-y-auto"
+                aria-labelledby="modal-title" role="dialog" aria-modal="true">
+                <div class="flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
+                    <div x-show="open" @click="open = false"
+                        class="fixed inset-0 bg-black/80 backdrop-blur-sm transition-opacity" aria-hidden="true"></div>
 
-                            <!-- Asset Image -->
-                            <div class="w-full h-48 bg-bg relative overflow-hidden border-b border-border">
-                                <% if (product.images && product.images.length> 0) { %>
-                                    <img src="<%= product.images[0] %>" alt="<%= product.title %>"
-                                        class="w-full h-full object-cover opacity-80 group-hover:opacity-100 transition duration-500 group-hover:scale-105">
-                                    <% } else { %>
-                                        <div
-                                            class="w-full h-full flex items-center justify-center bg-bg text-text-secondary">
-                                            <i class="fas fa-image text-3xl"></i>
-                                        </div>
-                                        <% } %>
+                    <span class="hidden sm:inline-block sm:align-middle sm:h-screen" aria-hidden="true">&#8203;</span>
 
-                                            <!-- Sector Tag -->
-                                            <div
-                                                class="absolute top-2 left-2 bg-black/80 backdrop-blur-sm border border-border px-2 py-1 rounded text-[10px] font-mono text-text-secondary">
-                                                SECTOR: <%= product.category.toUpperCase() %>
-                                            </div>
-                            </div>
-
-                            <div class="p-4 flex-grow flex flex-col justify-between"
-                                x-data="{ id: '<%= product._id %>' }">
-                                <div>
-                                    <div class="flex justify-between items-start mb-2">
-                                        <h3 class="text-white font-bold text-base truncate pr-2 w-3/4">
-                                            <%= product.title %>
-                                        </h3>
-                                        <span class="w-16">
-                                            <canvas id="spark-<%= product._id %>" height="30"></canvas>
-                                        </span>
-                                    </div>
-
-                                    <!-- Price Display -->
-                                    <div class="flex items-baseline space-x-2 mb-4">
-                                        <span class="text-text-secondary text-xs font-mono">LAST:</span>
-                                        <span class="text-xl font-mono text-bull font-bold">৳<%= product.price %></span>
-                                    </div>
-
+                    <div x-show="open"
+                        class="relative inline-block align-bottom bg-bg rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full border border-border">
+                        <form action="/products/orders" method="POST">
+                            <div class="bg-surface px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
+                                <div class="sm:flex sm:items-start">
                                     <div
-                                        class="flex items-center space-x-2 text-[10px] text-text-secondary font-mono mb-4 border-t border-border pt-2">
-                                        <span class="flex items-center space-x-1">
-                                            <i class="fas fa-user-circle"></i>
-                                            <span>
-                                                <% if (product.isAnonymous) { %>
-                                                    TRADER_ANON
-                                                    <% } else { %>
-                                                        <%= (product.user && product.user.name) ?
-                                                            product.user.name.split(' ')[0].toUpperCase() : ' UNKNOWN'
-                                                            %>
-                                                            <% } %>
-                                            </span>
-                                        </span>
-                                        <span>•</span>
-                                        <span>VOL: HIGH</span>
+                                        class="mx-auto flex-shrink-0 flex items-center justify-center h-12 w-12 rounded-full bg-bull/10 sm:mx-0 sm:h-10 sm:w-10 border border-bull/20">
+                                        <i class="fas fa-chart-line text-bull"></i>
+                                    </div>
+                                    <div class="mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left w-full">
+                                        <h3 class="text-lg leading-6 font-medium text-white font-mono" id="modal-title">
+                                            SUBMIT LIMIT ORDER</h3>
+                                        <div class="mt-4 space-y-4">
+                                            <div>
+                                                <label class="block text-text-secondary text-xs font-mono mb-1">TARGET
+                                                    SECTOR</label>
+                                                <select name="sector"
+                                                    class="w-full bg-bg border border-border text-white text-sm rounded p-2 font-mono focus:border-action outline-none">
+                                                    <option value="Electronics">ELECTRONICS</option>
+                                                    <option value="Clothing">CLOTHING</option>
+                                                    <option value="Books">BOOKS</option>
+                                                    <option value="Furniture">FURNITURE</option>
+                                                    <option value="Other">OTHER</option>
+                                                </select>
+                                            </div>
+                                            <div>
+                                                <label class="block text-text-secondary text-xs font-mono mb-1">STRIKE
+                                                    PRICE (MAX)</label>
+                                                <input type="number" name="maxPrice" placeholder="0.00"
+                                                    class="w-full bg-bg border border-border text-white text-sm rounded p-2 font-mono focus:border-action outline-none">
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
-
-                                <!-- Trading Actions -->
-                                <div class="grid grid-cols-2 gap-2 mt-auto">
-                                    <a href="/products/<%= product._id %>"
-                                        class="flex items-center justify-center bg-bull/10 border border-bull/20 hover:bg-bull hover:text-black text-bull text-xs font-mono font-bold py-2 rounded transition">
-                                        LONG POSITION
-                                    </a>
-                                    <button
-                                        class="flex items-center justify-center bg-action/10 border border-action/20 hover:bg-action hover:text-white text-action text-xs font-mono font-bold py-2 rounded transition">
-                                        HOLD
-                                    </button>
-                                </div>
                             </div>
-                        </div>
-                        <% }) %>
+                            <div class="bg-bg px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse border-t border-border">
+                                <button type="submit"
+                                    class="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-bull text-base font-medium text-black hover:bg-green-500 focus:outline-none sm:ml-3 sm:w-auto sm:text-sm font-mono font-bold">
+                                    SUBMIT ORDER
+                                </button>
+                                <button @click="open = false" type="button"
+                                    class="mt-3 w-full inline-flex justify-center rounded-md border border-border shadow-sm px-4 py-2 bg-surface text-base font-medium text-text-secondary hover:text-white focus:outline-none sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm font-mono">
+                                    CANCEL
+                                </button>
+                            </div>
+                        </form>
+                    </div>
                 </div>
-
-                <!-- Sparklines Script -->
-                <script>
-                    document.addEventListener('DOMContentLoaded', () => {
-                        const products = <% - JSON.stringify(products) %>;
-                        products.forEach(p => {
-                            const ctx = document.getElementById(`spark-${p._id}`)?.getContext('2d');
-                            if (ctx) {
-                                // Generate random data for sparkline
-                                const data = Array.from({ length: 10 }, () => Math.floor(Math.random() * 100));
-
-                                new Chart(ctx, {
-                                    type: 'line',
-                                    data: {
-                                        labels: Array(10).fill(''),
-                                        datasets: [{
-                                            data: data,
-                                            borderColor: '#00e396',
-                                            borderWidth: 1.5,
-                                            pointRadius: 0,
-                                            fill: false,
-                                            tension: 0.4
-                                        }]
-                                    },
-                                    options: {
-                                        responsive: true,
-                                        maintainAspectRatio: false,
-                                        plugins: { legend: { display: false }, tooltip: { enabled: false } },
-                                        scales: { x: { display: false }, y: { display: false } }
-                                    }
-                                });
-                            }
-                        });
-                    });
-                </script>
-                <% } %>
+            </div>
+        </div>
     </div>
 
-    <%- include('../partials/footer') %>
+    <% if (products.length===0) { %>
+        <div
+            class="flex flex-col items-center justify-center py-20 bg-surface border border-dashed border-border rounded-lg">
+            <i class="fas fa-box-open text-6xl text-border mb-4"></i>
+            <p class="text-text-secondary font-mono text-lg mb-4">NO ASSETS FOUND IN LIQUIDITY POOL</p>
+            <a href="/products/create"
+                class="px-6 py-2 bg-action text-white font-mono font-bold text-sm hover:bg-blue-600 rounded">INITIATE
+                IPO</a>
+        </div>
+        <% } else { %>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                <% products.forEach(product=> { %>
+                    <!-- Asset Card -->
+                    <div
+                        class="bg-surface border border-border rounded-lg overflow-hidden group hover:border-action transition relative flex flex-col h-full">
+
+                        <!-- Asset Image -->
+                        <div class="w-full h-48 bg-bg relative overflow-hidden border-b border-border">
+                            <% if (product.images && product.images.length> 0) { %>
+                                <img src="<%= product.images[0] %>" alt="<%= product.title %>"
+                                    class="w-full h-full object-cover opacity-80 group-hover:opacity-100 transition duration-500 group-hover:scale-105">
+                                <% } else { %>
+                                    <div
+                                        class="w-full h-full flex items-center justify-center bg-bg text-text-secondary">
+                                        <i class="fas fa-image text-3xl"></i>
+                                    </div>
+                                    <% } %>
+
+                                        <!-- Sector Tag -->
+                                        <div
+                                            class="absolute top-2 left-2 bg-black/80 backdrop-blur-sm border border-border px-2 py-1 rounded text-[10px] font-mono text-text-secondary">
+                                            SECTOR: <%= product.category.toUpperCase() %>
+                                        </div>
+                        </div>
+
+                        <div class="p-4 flex-grow flex flex-col justify-between" x-data="{ id: '<%= product._id %>' }">
+                            <div>
+                                <div class="flex justify-between items-start mb-2">
+                                    <h3 class="text-white font-bold text-base truncate pr-2 w-3/4">
+                                        <%= product.title %>
+                                    </h3>
+                                    <span class="w-16">
+                                        <canvas id="spark-<%= product._id %>" height="30"></canvas>
+                                    </span>
+                                </div>
+
+                                <!-- Price Display -->
+                                <div class="flex items-baseline space-x-2 mb-4">
+                                    <span class="text-text-secondary text-xs font-mono">LAST:</span>
+                                    <span class="text-xl font-mono text-bull font-bold">৳<%= product.price %></span>
+                                </div>
+
+                                <div
+                                    class="flex items-center space-x-2 text-[10px] text-text-secondary font-mono mb-4 border-t border-border pt-2">
+                                    <span class="flex items-center space-x-1">
+                                        <i class="fas fa-user-circle"></i>
+                                        <span>
+                                            <% if (product.isAnonymous) { %>
+                                                TRADER_ANON
+                                                <% } else { %>
+                                                    <%= (product.user && product.user.name) ?
+                                                        product.user.name.split(' ')[0].toUpperCase() : ' UNKNOWN' %>
+                                                        <% } %>
+                                        </span>
+                                    </span>
+                                    <span>•</span>
+                                    <span>VOL: HIGH</span>
+                                </div>
+                            </div>
+
+                            <!-- Trading Actions -->
+                            <div class="grid grid-cols-2 gap-2 mt-auto">
+                                <a href="/products/<%= product._id %>"
+                                    class="flex items-center justify-center bg-bull/10 border border-bull/20 hover:bg-bull hover:text-black text-bull text-xs font-mono font-bold py-2 rounded transition">
+                                    LONG POSITION
+                                </a>
+                                <button
+                                    class="flex items-center justify-center bg-action/10 border border-action/20 hover:bg-action hover:text-white text-action text-xs font-mono font-bold py-2 rounded transition">
+                                    HOLD
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    <% }) %>
+            </div>
+
+            <!-- Sparklines Script -->
+            <script>
+                document.addEventListener('DOMContentLoaded', () => {
+                    const products = <% - JSON.stringify(products) %>;
+                    products.forEach(p => {
+                        const ctx = document.getElementById(`spark-${p._id}`)?.getContext('2d');
+                        if (ctx) {
+                            // Generate random data for sparkline
+                            const data = Array.from({ length: 10 }, () => Math.floor(Math.random() * 100));
+
+                            new Chart(ctx, {
+                                type: 'line',
+                                data: {
+                                    labels: Array(10).fill(''),
+                                    datasets: [{
+                                        data: data,
+                                        borderColor: '#00e396',
+                                        borderWidth: 1.5,
+                                        pointRadius: 0,
+                                        fill: false,
+                                        tension: 0.4
+                                    }]
+                                },
+                                options: {
+                                    responsive: true,
+                                    maintainAspectRatio: false,
+                                    plugins: { legend: { display: false }, tooltip: { enabled: false } },
+                                    scales: { x: { display: false }, y: { display: false } }
+                                }
+                            });
+                        }
+                    });
+                });
+            </script>
+            <% } %>
+                </div>
+
+                <%- include('../partials/footer') %>

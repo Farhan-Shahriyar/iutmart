@@ -104,7 +104,8 @@
                                                 <% } else { %>
                                                     <div
                                                         class="w-full h-full flex items-center justify-center text-text-secondary">
-                                                        <i class="fas fa-image"></i></div>
+                                                        <i class="fas fa-image"></i>
+                                                    </div>
                                                     <% } %>
                                         </div>
                                         <div class="ml-4 flex-grow">
@@ -144,6 +145,70 @@
                                 <p class="text-text-secondary font-mono text-sm">NO ACTIVE SELL ORDERS (IPO) LISTED</p>
                             </div>
                             <% } %>
+                </div>
+
+                <!-- Open Orders (Limit Orders) -->
+                <div class="mb-8">
+                    <div class="flex items-center justify-between mb-4">
+                        <h2 class="text-lg font-bold text-white flex items-center space-x-2">
+                            <span class="w-1 h-5 bg-action block"></span>
+                            <span>OPEN ORDERS (bids)</span>
+                        </h2>
+                        <span class="text-xs text-text-secondary font-mono">
+                            <%= typeof myOrders !=='undefined' ? myOrders.length : 0 %> ORDERS PENDING
+                        </span>
+                    </div>
+
+                    <div class="bg-surface border border-border rounded-lg overflow-hidden">
+                        <% if (typeof myOrders !=='undefined' && myOrders.length> 0) { %>
+                            <div class="overflow-x-auto">
+                                <table class="w-full text-left text-sm font-mono">
+                                    <thead class="bg-bg text-text-secondary border-b border-border">
+                                        <tr>
+                                            <th class="px-4 py-3 font-bold text-xs uppercase">Date</th>
+                                            <th class="px-4 py-3 font-bold text-xs uppercase">Sector</th>
+                                            <th class="px-4 py-3 font-bold text-xs uppercase">Max Strike Price</th>
+                                            <th class="px-4 py-3 font-bold text-xs uppercase">Status</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody class="divide-y divide-border">
+                                        <% myOrders.forEach(order=> { %>
+                                            <tr class="hover:bg-white/5 transition">
+                                                <td class="px-4 py-3 text-white">
+                                                    <%= new Date(order.createdAt).toLocaleDateString() %>
+                                                        <span class="text-text-secondary text-[10px] ml-1">
+                                                            <%= new Date(order.createdAt).toLocaleTimeString([],
+                                                                {hour: '2-digit' , minute:'2-digit'}) %>
+                                                        </span>
+                                                </td>
+                                                <td class="px-4 py-3 text-action font-bold uppercase">
+                                                    <%= order.sector %>
+                                                </td>
+                                                <td class="px-4 py-3 text-white">৳<%= order.maxPrice %>
+                                                </td>
+                                                <td class="px-4 py-3">
+                                                    <% if (order.status==='ACTIVE' ) { %>
+                                                        <span
+                                                            class="px-2 py-0.5 rounded text-[10px] font-bold bg-action/10 text-action border border-action/20">ACTIVE</span>
+                                                        <% } else if (order.status==='FILLED' ) { %>
+                                                            <span
+                                                                class="px-2 py-0.5 rounded text-[10px] font-bold bg-bull/10 text-bull border border-bull/20">FILLED</span>
+                                                            <% } else { %>
+                                                                <span
+                                                                    class="px-2 py-0.5 rounded text-[10px] font-bold bg-text-secondary/10 text-text-secondary border border-border">CANCELLED</span>
+                                                                <% } %>
+                                                </td>
+                                            </tr>
+                                            <% }) %>
+                                    </tbody>
+                                </table>
+                            </div>
+                            <% } else { %>
+                                <div class="p-8 text-center border-dashed">
+                                    <p class="text-text-secondary font-mono text-sm">NO OPEN PRICE ALERTS</p>
+                                </div>
+                                <% } %>
+                    </div>
                 </div>
 
                 <!-- Client-Side Holdings (LocalStorage) -->

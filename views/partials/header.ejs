@@ -7,15 +7,17 @@
     <title>
         <%= typeof title !='undefined' ? title : 'THE TERMINAL' %> | IUT MART
     </title>
-    
-    <!-- Google Fonts: Inter & IBM Plex Mono -->
+
+    <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-    
+    <link
+        href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=Inter:wght@400;500;600;700&display=swap"
+        rel="stylesheet">
+
     <!-- Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    
+
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
@@ -29,10 +31,7 @@
                         bull: '#00e396',
                         bear: '#ff007a',
                         action: '#2962ff',
-                        text: {
-                            primary: '#ffffff',
-                            secondary: '#b2b5be'
-                        }
+                        text: { primary: '#ffffff', secondary: '#b2b5be' }
                     },
                     fontFamily: {
                         sans: ['Inter', 'sans-serif'],
@@ -43,53 +42,25 @@
         }
     </script>
 
-    <!-- Alpine.js -->
+    <!-- Scripts -->
     <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
-    
-    <!-- Chart.js -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-
     <link rel="stylesheet" href="/css/style.css">
 </head>
 
 <body class="bg-bg text-text-primary font-sans antialiased min-h-screen flex flex-col">
 
-    <!-- Ticker Tape -->
-    <div class="bg-black border-b border-border h-8 overflow-hidden flex items-center" x-data="{
-        items: [
-            { name: 'USED KETTLE', change: 2.4 },
-            { name: 'CALCULATOR', change: -0.8 },
-            { name: 'LAB COAT (M)', change: 12.0 },
-            { name: 'DORM FAN', change: 5.1 },
-            { name: 'DESK LAMP', change: -3.2 },
-            { name: 'ROUTER', change: 0.5 },
-            { name: 'MATTRESS', change: -1.5 },
-            { name: 'CYCLE', change: 8.4 }
-        ]
-    }">
-        <div class="whitespace-nowrap animate-marquee flex space-x-8 px-4 font-mono text-xs">
-            <!-- Duplicate items for seamless loop -->
-            <template x-for="i in 4">
-                <span class="flex space-x-8">
-                    <template x-for="item in items">
-                        <span class="flex items-center space-x-2">
-                            <span x-text="item.name" class="text-text-secondary"></span>
-                            <span :class="item.change >= 0 ? 'text-bull' : 'text-bear'" x-text="(item.change >= 0 ? '▲ +' : '▼ ') + item.change + '%'"></span>
-                        </span>
-                    </template>
-                </span>
-            </template>
-        </div>
-    </div>
+    <!-- Ticker Tape (Disabled) -->
+    <!-- <div class="bg-black ..."></div> -->
 
     <!-- Navigation -->
     <nav class="bg-surface border-b border-border sticky top-0 z-50">
         <div class="container mx-auto px-4 h-16 flex items-center justify-between">
             <!-- Brand -->
             <a href="/" class="flex items-center space-x-3 group">
-                <div class="w-8 h-8 bg-action rounded flex items-center justify-center text-white font-bold text-xl group-hover:bg-blue-600 transition">
-                    T
-                </div>
+                <div
+                    class="w-8 h-8 bg-action rounded flex items-center justify-center text-white font-bold text-xl group-hover:bg-blue-600 transition">
+                    T</div>
                 <div class="flex flex-col">
                     <span class="text-lg font-bold tracking-tight">THE TERMINAL</span>
                     <span class="text-[10px] text-text-secondary font-mono tracking-widest">IUT MART :: V2.0</span>
@@ -98,44 +69,45 @@
 
             <!-- Nav Links -->
             <div class="hidden md:flex items-center space-x-1">
-                <a href="/products" class="px-4 py-2 text-sm font-medium text-text-secondary hover:text-white hover:bg-border/50 rounded transition">MARKETS</a>
-                
+                <a href="/products"
+                    class="px-4 py-2 text-sm font-medium text-text-secondary hover:text-white hover:bg-border/50 rounded transition">MARKETS</a>
+
                 <% if (user) { %>
-                    <a href="/products/create" class="px-4 py-2 text-sm font-medium text-text-secondary hover:text-white hover:bg-border/50 rounded transition flex items-center space-x-2">
+                    <a href="/products/create"
+                        class="px-4 py-2 text-sm font-medium text-text-secondary hover:text-white hover:bg-border/50 rounded transition flex items-center space-x-2">
                         <i class="fas fa-plus text-xs"></i>
                         <span>IPO</span>
                     </a>
-                    <a href="/chat" class="px-4 py-2 text-sm font-medium text-text-secondary hover:text-white hover:bg-border/50 rounded transition relative">
+                    <a href="/chat"
+                        class="px-4 py-2 text-sm font-medium text-text-secondary hover:text-white hover:bg-border/50 rounded transition relative">
                         <span>COMMS</span>
-                        <% if (locals.unreadCount && locals.unreadCount > 0) { %>
+                        <% if (locals.unreadCount && locals.unreadCount> 0) { %>
                             <span class="absolute top-1 right-2 w-2 h-2 bg-action rounded-full animate-pulse"></span>
-                        <% } %>
+                            <% } %>
                     </a>
-                    
+
                     <!-- Profile Dropdown -->
                     <div class="relative ml-4" x-data="{ open: false }">
-                        <button @click="open = !open" @click.outside="open = false" class="flex items-center space-x-2 focus:outline-none">
-                            <img src="/uploads/<%= user.avatar || 'default-avatar.png' %>" class="w-8 h-8 rounded border border-border bg-black object-cover"
+                        <button @click="open = !open" @click.outside="open = false"
+                            class="flex items-center space-x-2 focus:outline-none">
+                            <img src="/uploads/<%= user.avatar || 'default-avatar.png' %>"
+                                class="w-8 h-8 rounded border border-border bg-black object-cover"
                                 onerror="this.onerror=null;this.src='https://ui-avatars.com/api/?name=<%= user.name %>&background=0b0e11&color=fff&size=64';">
                             <div class="flex flex-col items-start">
-                                <span class="text-xs font-mono text-white"><%= user.name.split(' ')[0] %></span>
+                                <span class="text-xs font-mono text-white">
+                                    <%= user.name.split(' ')[0] %></span>
                                 <span class="text-[10px] text-bull font-mono">ONLINE</span>
                             </div>
                             <i class="fas fa-chevron-down text-xs text-text-secondary"></i>
                         </button>
 
                         <div x-show="open" 
-                             x-transition:enter="transition ease-out duration-100"
-                             x-transition:enter-start="transform opacity-0 scale-95"
-                             x-transition:enter-end="transform opacity-100 scale-100"
-                             x-transition:leave="transition ease-in duration-75"
-                             x-transition:leave-start="transform opacity-100 scale-100"
-                             x-transition:leave-end="transform opacity-0 scale-95"
-                             class="absolute right-0 mt-2 w-56 bg-surface border border-border rounded shadow-xl py-1 z-50">
+                             class="absolute right-0 mt-2 w-56 bg-surface border border-border rounded shadow-xl py-1 z-50"
+                             style="display: none;">
                             
                             <div class="px-4 py-3 border-b border-border">
                                 <p class="text-sm text-white font-medium truncate"><%= user.name %></p>
-                                <p class="text-xs text-text-secondary font-mono truncate">ID: <%= user.studentId || 'N/A' %></p>
+                                <p class="text-xs text-text-secondary font-mono truncate">ID: <%= user.studentId || `N/A` %></p>
                             </div>
 
                             <a href="/dashboard" class="block px-4 py-2 text-sm text-text-secondary hover:bg-bg hover:text-white">Portfolio Manager</a>
@@ -152,16 +124,5 @@
             </div>
         </div>
     </nav>
-    
+
     <div class="flex-grow">
-    
-    <style>
-        .animate-marquee {
-            display: flex;
-            animation: marquee 30s linear infinite;
-        }
-        @keyframes marquee {
-            0% { transform: translateX(0); }
-            100% { transform: translateX(-50%); }
-        }
-    </style>

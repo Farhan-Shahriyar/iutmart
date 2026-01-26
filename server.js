@@ -78,8 +78,16 @@ const { protect } = require('./middleware/auth');
 const preventCache = require('./middleware/preventCache');
 app.get('/dashboard', protect, preventCache, async (req, res) => {
     const Product = require('./models/Product');
+    const LimitOrder = require('./models/LimitOrder');
     const myProducts = await Product.find({ user: req.user.id });
-    res.render('dashboard', { title: 'Dashboard', user: req.user, myProducts });
+    const myOrders = await LimitOrder.find({ user: req.user.id }).sort({ createdAt: -1 });
+
+    res.render('dashboard', {
+        title: 'Dashboard',
+        user: req.user,
+        myProducts,
+        myOrders
+    });
 });
 
 // Socket.io
