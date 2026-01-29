@@ -85,17 +85,69 @@
                             <div class="space-y-2">
                                 <label class="block text-xs font-bold text-text-secondary font-mono uppercase">Asset
                                     Images (Max 5)</label>
-                                <div
-                                    class="border-2 border-dashed border-border rounded-lg p-6 text-center hover:bg-bg/50 transition cursor-pointer relative">
-                                    <input type="file" name="images" multiple accept="image/*"
-                                        class="absolute inset-0 w-full h-full opacity-0 cursor-pointer">
-                                    <div class="text-text-secondary">
+                                <div id="dropZone"
+                                    class="border-2 border-dashed border-border rounded-lg p-6 text-center hover:bg-bg/50 transition cursor-pointer relative overflow-hidden group">
+                                    <input type="file" name="images" id="imageInput" multiple accept="image/*"
+                                        class="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10">
+
+                                    <div id="uploadPrompt"
+                                        class="text-text-secondary transition-all duration-300 group-hover:scale-105">
                                         <i class="fas fa-cloud-upload-alt text-3xl mb-2 text-action"></i>
                                         <p class="text-sm font-mono">DRAG FILES OR CLICK TO UPLOAD</p>
                                         <p class="text-[10px] opacity-70 mt-1">SUPPORTED: JPG, PNG, WEBP</p>
                                     </div>
+
+                                    <!-- Preview Container -->
+                                    <div id="previewContainer" class="hidden grid-cols-5 gap-2 mt-4 relative z-0"></div>
+                                    <p id="fileCount" class="hidden text-xs text-action font-mono mt-2 font-bold"></p>
                                 </div>
                             </div>
+
+                            <script>
+                                const imageInput = document.getElementById('imageInput');
+                                const uploadPrompt = document.getElementById('uploadPrompt');
+                                const previewContainer = document.getElementById('previewContainer');
+                                const fileCount = document.getElementById('fileCount');
+                                const dropZone = document.getElementById('dropZone');
+
+                                imageInput.addEventListener('change', function (e) {
+                                    const files = Array.from(e.target.files);
+
+                                    if (files.length > 0) {
+                                        // Hide prompt, show previews
+                                        uploadPrompt.classList.add('hidden');
+                                        previewContainer.classList.remove('hidden');
+                                        previewContainer.classList.add('grid');
+                                        previewContainer.innerHTML = '';
+
+                                        fileCount.classList.remove('hidden');
+                                        fileCount.textContent = `${files.length} FILE(S) SELECTED`;
+                                        dropZone.classList.add('border-action');
+
+                                        files.forEach(file => {
+                                            if (file.type.startsWith('image/')) {
+                                                const reader = new FileReader();
+                                                reader.onload = function (e) {
+                                                    const div = document.createElement('div');
+                                                    div.className = 'relative aspect-square rounded overflow-hidden border border-border';
+                                                    div.innerHTML = `
+                                                        <img src="${e.target.result}" class="w-full h-full object-cover">
+                                                    `;
+                                                    previewContainer.appendChild(div);
+                                                }
+                                                reader.readAsDataURL(file);
+                                            }
+                                        });
+                                    } else {
+                                        // Reset UI
+                                        uploadPrompt.classList.remove('hidden');
+                                        previewContainer.classList.add('hidden');
+                                        previewContainer.classList.remove('grid');
+                                        fileCount.classList.add('hidden');
+                                        dropZone.classList.remove('border-action');
+                                    }
+                                });
+                            </script>
 
                             <div class="flex items-center space-x-3 p-4 bg-bg/50 border border-border rounded">
                                 <input type="checkbox" name="isAnonymous" id="isAnonymous"
@@ -109,11 +161,29 @@
                                 </div>
                             </div>
 
-                            <button type="submit"
-                                class="w-full bg-action hover:bg-blue-600 text-white font-mono font-bold py-4 rounded shadow-lg shadow-action/20 transition transform active:scale-[0.99] flex items-center justify-center space-x-2">
-                                <i class="fas fa-paper-plane"></i>
-                                <span>SUBMIT FOR PUBLIC TRADING</span>
+                            <button type="submit" id="submitBtn"
+                                class="w-full bg-action hover:bg-blue-600 text-white font-mono font-bold py-4 rounded shadow-lg shadow-action/20 transition transform active:scale-[0.99] flex items-center justify-center space-x-2 disabled:opacity-70 disabled:cursor-wait">
+                                <i class="fas fa-paper-plane" id="btnIcon"></i>
+                                <span id="btnText">SUBMIT FOR PUBLIC TRADING</span>
+                                <i class="fas fa-spinner fa-spin hidden" id="btnSpinner"></i>
                             </button>
+                        </form>
+
+                        <script>
+                            const form = document.querySelector('form');
+                            const submitBtn = document.getElementById('submitBtn');
+                            const btnIcon = document.getElementById('btnIcon');
+                            const btnText = document.getElementById('btnText');
+                            const btnSpinner = document.getElementById('btnSpinner');
+
+                            form.addEventListener('submit', function () {
+                                // Disable button prevents double submit
+                                submitBtn.disabled = true;
+                                btnIcon.classList.add('hidden');
+                                btnText.textContent = 'TRANSMITTING TO LEDGER...';
+                                btnSpinner.classList.remove('hidden');
+                            });
+                        </script>
                         </form>
             </div>
         </div>

@@ -60,7 +60,8 @@ exports.createProduct = async (req, res) => {
         let images = [];
         if (req.files) {
             req.files.forEach(file => {
-                images.push('/uploads/' + file.filename);
+                // Cloudinary storage provides 'path' or 'secure_url'
+                images.push(file.path || file.secure_url);
             });
         }
 
