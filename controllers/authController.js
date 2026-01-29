@@ -17,7 +17,7 @@ exports.register = async (req, res) => {
 
         let avatar = 'default-avatar.png';
         if (req.file) {
-            avatar = req.file.filename;
+            avatar = req.file.path || req.file.secure_url;
         }
 
         // Check if email domain is valid
@@ -317,7 +317,7 @@ exports.completeProfile = async (req, res) => {
         user.isVerified = true;
 
         if (req.file) {
-            user.avatar = req.file.filename;
+            user.avatar = req.file.path || req.file.secure_url;
         }
 
         await user.save();
@@ -348,7 +348,7 @@ exports.updateAvatar = async (req, res) => {
         }
 
         const user = await User.findById(req.user.id);
-        user.avatar = req.file.filename;
+        user.avatar = req.file.path || req.file.secure_url;
         await user.save();
 
         req.flash('success', 'Profile picture updated!');
