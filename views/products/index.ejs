@@ -142,7 +142,7 @@
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
                 <% products.forEach(product=> { %>
                     <!-- Asset Card -->
-                    <div
+                    <a href="/products/<%= product._id %>"
                         class="bg-surface border border-border rounded-lg overflow-hidden group hover:border-action transition relative flex flex-col h-full">
 
                         <!-- Asset Image -->
@@ -198,16 +198,8 @@
                                     <span>VOL: HIGH</span>
                                 </div>
                             </div>
-
-                            <!-- Trading Actions -->
-                            <div class="grid grid-cols-1 gap-2 mt-auto">
-                                <a href="/products/<%= product._id %>"
-                                    class="flex items-center justify-center bg-bull/10 border border-bull/20 hover:bg-bull hover:text-black text-bull text-xs font-mono font-bold py-2 rounded transition">
-                                    LONG POSITION
-                                </a>
-                            </div>
                         </div>
-                    </div>
+                    </a>
                     <% }) %>
             </div>
 
