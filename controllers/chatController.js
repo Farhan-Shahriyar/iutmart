@@ -19,7 +19,7 @@ exports.startChat = async (req, res) => {
             const product = await Product.findById(productId);
             // If the chat is ABOUT this product, check if it's anonymous
             if (product && product.isAnonymous && product.user.toString() === otherUser._id.toString()) {
-                chatPartnerName = "Anonymous Seller";
+                chatPartnerName = "Anonymous Trader";
                 isAnonymousContext = true;
             }
         }
@@ -171,8 +171,8 @@ exports.getConversations = async (req, res) => {
                 // I am Buyer, Product is Anonymous -> Seller is Anonymous
                 showAsAnonymous = true;
 
-                displayName = "Anonymous Seller";
-                displayAvatar = "default-avatar.png";
+                displayName = "Anonymous Trader";
+                displayAvatar = "https://ui-avatars.com/api/?name=Anonymous&background=333&color=fff";
                 displayId = null;
             }
 

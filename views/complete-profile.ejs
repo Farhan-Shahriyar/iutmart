@@ -23,9 +23,8 @@
                             </div>
 
                             <!-- Preview Image -->
-                            <% let avatarSrc='' ; if (user.avatar && user.avatar !=='default-avatar.png' ) { if
-                                (user.avatar.startsWith('http')) { avatarSrc=user.avatar; } else { avatarSrc='/uploads/'
-                                + user.avatar; } } %>
+                            <% let avatarSrc='' ; if (user.avatar && user.avatar !=='default-avatar.png' ) {
+                                avatarSrc=user.avatar; } %>
                                 <img src="<%= avatarSrc %>" id="avatarPreview" class="avatar-preview" alt=""
                                     style="display: <%= avatarSrc ? 'block' : 'none' %>;">
 

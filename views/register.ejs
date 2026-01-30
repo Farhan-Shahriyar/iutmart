@@ -4,118 +4,205 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Create Account - IUT Marketplace</title>
-    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    <link rel="stylesheet" href="/css/style.css">
+    <title>INITIALISE PROTOCOL // IUT MART</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        bg: '#09090b',
+                        surface: '#18181b',
+                        border: '#27272a',
+                        bull: '#00e396',
+                        bear: '#ff4560',
+                        text: {
+                            primary: '#ffffff',
+                            secondary: '#a1a1aa'
+                        },
+                        action: '#3b82f6'
+                    },
+                    fontFamily: {
+                        mono: ['"JetBrains Mono"', 'monospace'],
+                        sans: ['Inter', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    <link
+        href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Inter:wght@400;600&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        body {
+            background-color: #09090b;
+            color: #ffffff;
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        /* Subtle grid background */
+        .bg-grid {
+            background-size: 40px 40px;
+            background-image: linear-gradient(to right, #27272a 1px, transparent 1px),
+                linear-gradient(to bottom, #27272a 1px, transparent 1px);
+            mask-image: radial-gradient(circle at center, black 40%, transparent 100%);
+        }
+    </style>
 </head>
 
-<body>
-    <div class="auth-container">
-        <div class="auth-header">
-            <h2>Create Account</h2>
-            <p>Join the student marketplace community</p>
+<body class="min-h-screen flex items-center justify-center relative py-12 px-4">
+    <!-- Background Grid Effect -->
+    <div class="absolute inset-0 bg-grid opacity-20 pointer-events-none fixed"></div>
+
+    <div class="w-full max-w-lg relative z-10">
+        <!-- Brand/Header -->
+        <div class="text-center mb-8">
+            <div
+                class="inline-flex items-center justify-center w-12 h-12 rounded-full bg-surface border border-border mb-4 shadow-lg shadow-action/10 group">
+                <i class="fas fa-cube text-xl text-action group-hover:scale-110 transition duration-300"></i>
+            </div>
+            <h1 class="text-2xl font-bold tracking-tight text-white mb-2">NEW TRADER PROTOCOL</h1>
+            <p class="text-text-secondary text-xs tracking-wider">ESTABLISH SECURE IDENTITY</p>
         </div>
 
-        <% if (locals.error && locals.error.length> 0) { %>
-            <div class="alert">
-                <i class="fas fa-exclamation-circle"></i>
-                <%= error %>
+        <div class="bg-surface border border-border rounded-lg shadow-2xl overflow-hidden backdrop-blur-sm">
+            <!-- Terminal Header Bar -->
+            <div class="bg-bg/50 border-b border-border px-4 py-2 flex items-center space-x-2">
+                <div class="w-3 h-3 rounded-full bg-bear/50"></div>
+                <div class="w-3 h-3 rounded-full bg-yellow-500/50"></div>
+                <div class="w-3 h-3 rounded-full bg-bull/50"></div>
+                <span class="ml-auto text-[10px] text-text-secondary">register.exe</span>
             </div>
-            <% } %>
 
-                <div class="social-login">
-                    <a href="/auth/google" class="btn btn-google">
-                        <svg width="18" height="18" viewBox="0 0 18 18" xmlns="http://www.w3.org/2000/svg">
-                            <path
-                                d="M17.64 9.20455C17.64 8.56636 17.5827 7.95273 17.4764 7.36364H9V10.845H13.8436C13.635 11.97 13.0009 12.9232 12.0477 13.5614V15.8195H14.9564C16.6582 14.2527 17.64 11.9455 17.64 9.20455Z"
-                                fill="#4285F4" />
-                            <path
-                                d="M9 18C11.43 18 13.4673 17.1941 14.9564 15.8195L12.0477 13.5614C11.2418 14.1014 10.2109 14.4205 9 14.4205C6.65591 14.4205 4.67182 12.8373 3.96409 10.71H0.957275V13.0418C2.43818 15.9832 5.48182 18 9 18Z"
-                                fill="#34A853" />
-                            <path
-                                d="M3.96409 10.71C3.78409 10.17 3.68182 9.59318 3.68182 9C3.68182 8.40682 3.78409 7.83 3.96409 7.29V4.95818H0.957275C0.347727 6.17318 0 7.54773 0 9C0 10.4523 0.347727 11.8268 0.957275 13.0418L3.96409 10.71Z"
-                                fill="#FBBC05" />
-                            <path
-                                d="M9 3.57955C10.3214 3.57955 11.5077 4.03364 12.4405 4.92545L15.0218 2.34409C13.4632 0.891818 11.4259 0 9 0C5.48182 0 2.43818 2.01682 0.957275 4.95818L3.96409 7.29C4.67182 5.16273 6.65591 3.57955 9 3.57955Z"
-                                fill="#EA4335" />
-                        </svg>
-                        Sign up with Google
-                    </a>
-                    <a href="/auth/github" class="btn btn-github">
-                        <i class="fab fa-github"></i> Sign up with GitHub
-                    </a>
-                </div>
+            <div class="p-8">
+                <% if (locals.error && locals.error.length> 0) { %>
+                    <div
+                        class="mb-6 bg-bear/10 border border-bear/20 text-bear px-4 py-3 rounded text-xs flex items-center">
+                        <i class="fas fa-exclamation-triangle mr-2"></i>
+                        <span>
+                            <%= error %>
+                        </span>
+                    </div>
+                    <% } %>
 
-                <form action="/auth/register" method="POST" enctype="multipart/form-data">
-
-                    <div class="avatar-upload-container">
-                        <div class="avatar-upload" onclick="document.getElementById('avatarInput').click()">
-                            <!-- Default Placeholder Icon -->
-                            <div class="avatar-placeholder" id="avatarPlaceholder">
-                                <i class="fas fa-camera"></i>
-                            </div>
-
-                            <!-- Preview Image (Hidden by default) -->
-                            <img src="" id="avatarPreview" class="avatar-preview" alt="Profile">
-
-                            <!-- Hover Overlay -->
-                            <div class="avatar-overlay">
-                                <i class="fas fa-camera"></i>
-                            </div>
-
-                            <input type="file" name="avatar" id="avatarInput" accept="image/*" style="display: none;"
-                                onchange="previewImage(this)">
+                        <div class="grid grid-cols-2 gap-4 mb-8">
+                            <a href="/auth/google"
+                                class="flex items-center justify-center px-4 py-2.5 border border-border rounded bg-white hover:bg-gray-100 transition duration-200 group">
+                                <img src="https://www.svgrepo.com/show/475656/google-color.svg" class="h-4 w-4 mr-2"
+                                    alt="Google">
+                                <span class="text-xs font-bold text-gray-900 font-sans">Google Signup</span>
+                            </a>
+                            <a href="/auth/github"
+                                class="flex items-center justify-center px-4 py-2.5 border border-border rounded bg-[#24292e] hover:bg-[#2f363d] transition duration-200">
+                                <i class="fab fa-github text-white text-lg mr-2"></i>
+                                <span class="text-xs font-bold text-white font-sans">GitHub Signup</span>
+                            </a>
                         </div>
-                        <button type="button" class="avatar-remove" id="removeBtn" onclick="removeImage()">
-                            <i class="fas fa-times"></i>
-                        </button>
-                    </div>
-                    <div class="avatar-hint">
-                        Upload Profile Photo (Optional)
-                    </div>
 
-                    <div class="form-group">
-                        <label>Full Name</label>
-                        <input type="text" name="name" required placeholder="John Doe">
-                    </div>
+                        <div class="relative mb-8">
+                            <div class="absolute inset-0 flex items-center">
+                                <div class="w-full border-t border-border"></div>
+                            </div>
+                            <div class="relative flex justify-center text-xs">
+                                <span class="px-2 bg-surface text-text-secondary tracking-widest">MANUAL OVERRIDE</span>
+                            </div>
+                        </div>
 
-                    <div class="form-group">
-                        <label>Email Address</label>
-                        <input type="email" name="email" required placeholder="student@iut-dhaka.edu">
-                    </div>
+                        <form action="/auth/register" method="POST" enctype="multipart/form-data" class="space-y-5">
+                            <!-- Avatar Upload -->
+                            <div class="flex justify-center mb-6">
+                                <div class="relative group cursor-pointer"
+                                    onclick="document.getElementById('avatarInput').click()">
+                                    <div
+                                        class="w-24 h-24 rounded-full bg-bg border-2 border-dashed border-border flex items-center justify-center overflow-hidden hover:border-action transition group-hover:shadow-lg group-hover:shadow-action/10">
+                                        <img src="" id="avatarPreview" class="w-full h-full object-cover hidden">
+                                        <div id="avatarPlaceholder" class="text-text-secondary text-center">
+                                            <i class="fas fa-camera text-2xl mb-1"></i>
+                                            <p class="text-[8px] uppercase">Upload ID</p>
+                                        </div>
+                                    </div>
+                                    <div
+                                        class="absolute inset-0 bg-black/50 rounded-full items-center justify-center hidden group-hover:flex transition">
+                                        <i class="fas fa-edit text-white"></i>
+                                    </div>
+                                    <input type="file" name="avatar" id="avatarInput" accept="image/*" class="hidden"
+                                        onchange="previewImage(this)">
+                                </div>
+                            </div>
 
-                    <div class="form-group">
-                        <label>Student ID (9 digits)</label>
-                        <input type="text" name="studentId" required pattern="\d{9}"
-                            title="Student ID must be exactly 9 digits" placeholder="e.g. 190041234">
-                    </div>
+                            <!-- Name & Email -->
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <div>
+                                    <label class="block text-[10px] font-bold text-text-secondary mb-1.5 uppercase">Full
+                                        Name</label>
+                                    <input type="text" name="name" required placeholder="JOHN DOE"
+                                        class="w-full bg-bg border border-border text-white text-xs rounded px-3 py-2.5 focus:border-action focus:ring-1 focus:ring-action outline-none transition placeholder-text-secondary/30 font-mono">
+                                </div>
+                                <div>
+                                    <label
+                                        class="block text-[10px] font-bold text-text-secondary mb-1.5 uppercase">Email
+                                        Address</label>
+                                    <input type="email" name="email" required placeholder="student@iut-dhaka.edu"
+                                        class="w-full bg-bg border border-border text-white text-xs rounded px-3 py-2.5 focus:border-action focus:ring-1 focus:ring-action outline-none transition placeholder-text-secondary/30 font-mono">
+                                </div>
+                            </div>
 
-                    <div class="form-group">
-                        <label>Contact Number</label>
-                        <input type="tel" name="contactNumber" required pattern="(?:\+88|88)?(01[3-9]\d{8})"
-                            title="Please enter a valid Bangladesh phone number" placeholder="e.g. 01712345678">
-                    </div>
+                            <!-- ID & Contact -->
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <div>
+                                    <label
+                                        class="block text-[10px] font-bold text-text-secondary mb-1.5 uppercase">Student
+                                        ID (9 digits)</label>
+                                    <input type="text" name="studentId" required pattern="\d{9}"
+                                        title="Student ID must be exactly 9 digits" placeholder="190041234"
+                                        class="w-full bg-bg border border-border text-white text-xs rounded px-3 py-2.5 focus:border-action focus:ring-1 focus:ring-action outline-none transition placeholder-text-secondary/30 font-mono tracking-widest">
+                                </div>
+                                <div>
+                                    <label
+                                        class="block text-[10px] font-bold text-text-secondary mb-1.5 uppercase">Contact
+                                        Number</label>
+                                    <input type="tel" name="contactNumber" required placeholder="01712345678"
+                                        class="w-full bg-bg border border-border text-white text-xs rounded px-3 py-2.5 focus:border-action focus:ring-1 focus:ring-action outline-none transition placeholder-text-secondary/30 font-mono">
+                                </div>
+                            </div>
 
-                    <div class="form-group">
-                        <label>Password</label>
-                        <input type="password" name="password" id="password" required placeholder="••••••••"
-                            minlength="8">
-                        <small class="input-hint">Must be at least 8 characters</small>
-                    </div>
+                            <!-- Passwords -->
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <div>
+                                    <label
+                                        class="block text-[10px] font-bold text-text-secondary mb-1.5 uppercase">Password</label>
+                                    <input type="password" name="password" id="password" required placeholder="••••••••"
+                                        minlength="8"
+                                        class="w-full bg-bg border border-border text-white text-xs rounded px-3 py-2.5 focus:border-action focus:ring-1 focus:ring-action outline-none transition placeholder-text-secondary/30 font-mono">
+                                    <p class="text-[8px] text-text-secondary mt-1 ml-1">MIN 8 CHARS</p>
+                                </div>
+                                <div>
+                                    <label
+                                        class="block text-[10px] font-bold text-text-secondary mb-1.5 uppercase">Confirm
+                                        Passcode</label>
+                                    <input type="password" name="confirmPassword" id="confirmPassword" required
+                                        placeholder="••••••••" minlength="8"
+                                        class="w-full bg-bg border border-border text-white text-xs rounded px-3 py-2.5 focus:border-action focus:ring-1 focus:ring-action outline-none transition placeholder-text-secondary/30 font-mono">
+                                </div>
+                            </div>
 
-                    <div class="form-group">
-                        <label>Confirm Password</label>
-                        <input type="password" name="confirmPassword" id="confirmPassword" required
-                            placeholder="••••••••" minlength="8">
-                    </div>
+                            <button type="submit"
+                                class="w-full bg-action hover:bg-blue-600 text-white font-bold py-2.5 rounded transition duration-200 shadow-lg shadow-action/20 flex items-center justify-center space-x-2 text-sm mt-6">
+                                <span>INITIALISE ACCOUNT</span>
+                                <i class="fas fa-check-circle text-xs"></i>
+                            </button>
+                        </form>
+            </div>
 
-                    <button type="submit" class="btn btn-primary">Create Account</button>
-                </form>
-
-                <div class="auth-footer">
-                    Already have an account? <a href="/auth/login">Login</a>
-                </div>
+            <div class="bg-bg/50 px-8 py-4 border-t border-border text-center">
+                <p class="text-xs text-text-secondary">
+                    Existing Trader? <a href="/auth/login"
+                        class="text-action hover:text-white font-bold transition">Access Terminal</a>
+                </p>
+            </div>
+        </div>
     </div>
 
     <script>
@@ -125,28 +212,12 @@
                 reader.onload = function (e) {
                     const preview = document.getElementById('avatarPreview');
                     const placeholder = document.getElementById('avatarPlaceholder');
-                    const removeBtn = document.getElementById('removeBtn');
-
                     preview.src = e.target.result;
-                    preview.style.display = 'block';
-                    placeholder.style.display = 'none';
-                    removeBtn.style.display = 'flex';
+                    preview.classList.remove('hidden');
+                    placeholder.classList.add('hidden');
                 }
                 reader.readAsDataURL(input.files[0]);
             }
-        }
-
-        function removeImage() {
-            const input = document.getElementById('avatarInput');
-            const preview = document.getElementById('avatarPreview');
-            const placeholder = document.getElementById('avatarPlaceholder');
-            const removeBtn = document.getElementById('removeBtn');
-
-            input.value = ''; // Clear input
-            preview.src = '';
-            preview.style.display = 'none';
-            placeholder.style.display = 'flex';
-            removeBtn.style.display = 'none';
         }
 
         const form = document.querySelector('form');
@@ -156,7 +227,7 @@
 
             if (password !== confirmPassword) {
                 e.preventDefault();
-                alert('Passwords do not match!');
+                alert('ACCESS DENIED: Passwords do not match protocol.');
             }
         });
     </script>
