@@ -1,57 +1,146 @@
 <%- include('../partials/header') %>
 
-    <div class="container fade-in">
-        <div class="chat-container">
-            <div class="chat-header" style="display: flex; align-items: center; gap: 10px;">
-                <% if (!otherUser) { %>
-                    <h3>
-                        <%= title %>
-                    </h3>
-                    <% } else { %>
-                        <div style="width: 40px; height: 40px; border-radius: 50%; overflow: hidden;">
-                            <% if (title==='Anonymous User' ) { %>
-                                <img src="/images/default-avatar.png"
-                                    style="width: 100%; height: 100%; object-fit: cover;" alt="Anonymous">
-                                <% } else { %>
-                                    <img src="/uploads/<%= otherUser.avatar || 'default-avatar.png' %>"
-                                        style="width: 100%; height: 100%; object-fit: cover;" alt="User"
-                                        onerror="this.onerror=null;this.src='https://ui-avatars.com/api/?name=<%= otherUser.name %>&background=CC2936&color=fff&size=64';">
-                                    <% } %>
-                        </div>
-                        <h3 style="margin: 0;">
-                            <%= title %>
-                        </h3>
-                        <% } %>
+    <div class="container mx-auto px-4 py-8 max-w-4xl h-[calc(100vh-100px)]">
+        <div
+            class="flex flex-col h-full bg-surface border border-border rounded-lg shadow-2xl overflow-hidden relative">
+            <!-- Grid Background Overlay -->
+            <div
+                class="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0MCIgaGVpZ2h0PSI0MCI+CjxwYXRoIGQ9Ik0wIDBoNDB2NDBIMHoiIGZpbGw9Im5vbmUiLz4KPHBhdGggZD0iTTAgNDBoNDBNNDAgMHY0MCIgc3Ryb2tlPSIjMjcyNzJhIiBzdHJva2Utd2lkdGg9IjAuNSIgb3BhY2l0eT0iMC4zIi8+Cjwvc3ZnPg==')] opacity-10 pointer-events-none">
             </div>
 
-            <div class="chat-messages" id="chat-messages">
+            <!-- Chat Header -->
+            <div class="shrink-0 bg-bg border-b border-border p-4 flex justify-between items-center z-10">
+                <div class="flex items-center gap-3">
+                    <a href="/chat/inbox"
+                        class="w-8 h-8 flex items-center justify-center rounded border border-border hover:bg-white/5 hover:border-white transition text-text-secondary hover:text-white">
+                        <i class="fas fa-arrow-left text-xs"></i>
+                    </a>
+
+                    <% if (!otherUser) { %>
+                        <h3 class="font-mono font-bold text-white">
+                            <%= title %>
+                        </h3>
+                        <% } else { %>
+                            <div class="relative">
+                                <div class="w-10 h-10 rounded bg-black border border-border overflow-hidden">
+                                    <% if (title==='Anonymous Trader' || isAnonymousContext) { %>
+                                        <div
+                                            class="w-full h-full flex items-center justify-center bg-surface text-text-secondary">
+                                            <i class="fas fa-user-secret"></i>
+                                        </div>
+                                        <% } else { %>
+                                            <img src="<%= otherUser.avatar %>" class="w-full h-full object-cover"
+                                                onerror="this.src='https://ui-avatars.com/api/?name=<%= otherUser.name %>&background=0b0e11&color=fff'">
+                                            <% } %>
+                                </div>
+                                <div
+                                    class="absolute -bottom-1 -right-1 w-2.5 h-2.5 bg-bull rounded-full border border-bg animate-pulse">
+                                </div>
+                            </div>
+                            <div>
+                                <h3 class="font-mono font-bold text-white text-sm">
+                                    <% if (title==='Anonymous Trader' || isAnonymousContext) { %>
+                                        <span class="text-bear">UNKNOWN AGENT</span>
+                                        <% } else { %>
+                                            <%= title.replace(/\d+/g, '' ).trim() %>
+                                                <% } %>
+                                </h3>
+                                <p class="text-[10px] text-text-secondary font-mono flex items-center gap-1">
+                                    <i class="fas fa-lock text-[8px]"></i>
+                                    <% if (title==='Anonymous Trader' || isAnonymousContext) { %>
+                                        IDENTITY MASKED
+                                        <% } else { %>
+                                            ENCRYPTED CHANNEL
+                                            <% } %>
+                                </p>
+                            </div>
+                            <% } %>
+                </div>
+
+                <div class="flex items-center gap-3">
+                    <% if (typeof productPayload !=='undefined' && productPayload) { %>
+                        <div class="hidden md:flex items-center gap-2 px-3 py-1.5 bg-bg border border-border rounded">
+                            <i class="fas fa-box text-text-secondary text-xs"></i>
+                            <span class="text-xs text-white font-mono">REF: <%= productPayload.title %></span>
+                            <span class="text-xs text-bull font-mono ml-2">৳<%= productPayload.price %></span>
+                        </div>
+                        <% } %>
+                            <button class="text-text-secondary hover:text-white text-xs font-mono">
+                                <i class="fas fa-cog"></i>
+                            </button>
+                </div>
+            </div>
+
+            <!-- Chat Messages Area -->
+            <div class="flex-grow overflow-y-auto p-4 space-y-4 relative z-10" id="chat-messages">
+                <div class="text-center py-4">
+                    <span
+                        class="text-[10px] bg-bg border border-border px-3 py-1 rounded-full text-text-secondary font-mono">
+                        SECURE SESSION ESTABLISHED • <%= new Date().toLocaleDateString() %>
+                    </span>
+                </div>
+
                 <% messages.forEach(msg=> { %>
                     <div
-                        class="message <%= msg.sender.toString() === user._id.toString() ? 'my-message' : 'other-message' %>">
-                        <p>
-                            <%= msg.content %>
-                        </p>
-                        <span class="time">
-                            <%= msg.timestamp.toLocaleTimeString([], {hour: '2-digit' , minute:'2-digit'}) %>
-                        </span>
+                        class="flex flex-col <%= msg.sender.toString() === user._id.toString() ? 'items-end' : 'items-start' %>">
+                        <div class="max-w-[75%] md:max-w-[60%]">
+                            <div
+                                class="flex items-end gap-2 <%= msg.sender.toString() === user._id.toString() ? 'flex-row-reverse' : '' %>">
+                                <!-- Message Bubble -->
+                                <div class="<%= msg.sender.toString() === user._id.toString() 
+                                    ? 'bg-action/10 border border-action/30 text-white rounded-t-lg rounded-bl-lg' 
+                                    : 'bg-surface border border-border text-gray-200 rounded-t-lg rounded-br-lg' %> 
+                                    px-4 py-2.5 relative group">
+
+                                    <p class="text-sm font-mono leading-relaxed whitespace-pre-wrap">
+                                        <%= msg.content %>
+                                    </p>
+
+                                    <div
+                                        class="absolute <%= msg.sender.toString() === user._id.toString() ? '-left-8' : '-right-8' %> bottom-0 opacity-0 group-hover:opacity-100 transition text-[10px] text-text-secondary font-mono">
+                                        <%= new Date(msg.timestamp).toLocaleTimeString([], {hour: '2-digit' ,
+                                            minute:'2-digit'}) %>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                     <% }) %>
             </div>
 
-            <div class="chat-input fade-in">
-                <form id="chat-form">
-                    <input type="text" id="msg" placeholder="Type a message..." required autocomplete="off">
-                    <button type="submit" class="btn btn-primary"><i class="fas fa-paper-plane"></i></button>
+            <!-- Chat Input -->
+            <div class="shrink-0 bg-bg border-t border-border p-4 z-10">
+                <form id="chat-form" class="relative">
+                    <div
+                        class="flex items-end gap-2 bg-surface border border-border rounded p-2 focus-within:border-action transition ring-1 ring-transparent focus-within:ring-action/20">
+                        <div class="pb-2 pl-1">
+                            <i class="fas fa-terminal text-text-secondary text-sm"></i>
+                        </div>
+                        <input type="text" id="msg"
+                            class="flex-grow bg-transparent border-none text-white font-mono text-sm focus:ring-0 placeholder-text-secondary/30 p-2"
+                            placeholder="Ente command or message..." required autocomplete="off">
+                        <button type="submit"
+                            class="p-2 bg-action hover:bg-blue-600 text-white rounded transition shadow-lg shadow-action/20 group">
+                            <i
+                                class="fas fa-paper-plane text-xs group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform"></i>
+                        </button>
+                    </div>
+                    <div class="mt-2 flex justify-between px-1">
+                        <span class="text-[10px] text-text-secondary font-mono">SHIFT + ENTER for format</span>
+                        <span class="text-[10px] text-bull font-mono animate-pulse">● UPLINK READY</span>
+                    </div>
                 </form>
             </div>
         </div>
     </div>
 
+    <!-- Removed old styles, using Tailwind now -->
+
     <script src="/socket.io/socket.io.js"></script>
     <script>
         const socket = io();
         const chatForm = document.getElementById('chat-form');
-        const chatMessages = document.querySelector('.chat-messages');
+        const chatMessages = document.getElementById('chat-messages');
         const sender = '<%= user._id %>';
         const receiver = '<%= otherUser._id %>';
 
@@ -82,108 +171,41 @@
         });
 
         function outputMessage(message) {
-            const div = document.createElement('div');
-            div.classList.add('message');
-            div.classList.add(message.sender === sender ? 'my-message' : 'other-message');
+            const isMyMessage = message.sender === sender;
+            const alignClass = isMyMessage ? 'items-end' : 'items-start';
+            const rowReverse = isMyMessage ? 'flex-row-reverse' : '';
+            const bubbleClass = isMyMessage
+                ? 'bg-action/10 border border-action/30 text-white rounded-t-lg rounded-bl-lg'
+                : 'bg-surface border border-border text-gray-200 rounded-t-lg rounded-br-lg';
 
-            // Format time properly (simple version)
             const time = new Date(message.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+            const timePos = isMyMessage ? '-left-8' : '-right-8';
 
-            div.innerHTML = `<p>${message.content}</p><span class="time">${time}</span>`;
+            const div = document.createElement('div');
+            div.className = `flex flex-col ${alignClass}`;
+            div.innerHTML = `
+                <div class="max-w-[75%] md:max-w-[60%]">
+                    <div class="flex items-end gap-2 ${rowReverse}">
+                        <div class="${bubbleClass} px-4 py-2.5 relative group">
+                            <p class="text-sm font-mono leading-relaxed whitespace-pre-wrap">${message.content}</p>
+                            <div class="absolute ${timePos} bottom-0 opacity-0 group-hover:opacity-100 transition text-[10px] text-text-secondary font-mono">
+                                ${time}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+
             chatMessages.appendChild(div);
+            scrollToBottom();
+        }
+
+        function scrollToBottom() {
             chatMessages.scrollTop = chatMessages.scrollHeight;
         }
 
         // Scroll to bottom on load
-        chatMessages.scrollTop = chatMessages.scrollHeight;
+        scrollToBottom();
     </script>
-
-    <style>
-        .chat-container {
-            max-width: 800px;
-            margin: 2rem auto;
-            background: var(--glass-bg);
-            border: 1px solid var(--glass-border);
-            border-radius: 16px;
-            height: 70vh;
-            display: flex;
-            flex-direction: column;
-            overflow: hidden;
-        }
-
-        .chat-header {
-            padding: 1rem;
-            background: rgba(255, 255, 255, 0.8);
-            border-bottom: 1px solid rgba(0, 0, 0, 0.1);
-        }
-
-        .chat-messages {
-            flex: 1;
-            padding: 1rem;
-            overflow-y: auto;
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-        }
-
-        .message {
-            max-width: 70%;
-            padding: 10px 15px;
-            border-radius: 20px;
-            position: relative;
-        }
-
-        .my-message {
-            align-self: flex-end;
-            background: var(--primary);
-            color: white;
-            border-bottom-right-radius: 0;
-        }
-
-        .other-message {
-            align-self: flex-start;
-            background: #e0e0e0;
-            color: #333;
-            border-bottom-left-radius: 0;
-        }
-
-        .time {
-            display: block;
-            font-size: 0.7rem;
-            margin-top: 5px;
-            opacity: 0.8;
-            text-align: right;
-        }
-
-        .chat-input {
-            padding: 1rem;
-            background: rgba(255, 255, 255, 0.8);
-            border-top: 1px solid rgba(0, 0, 0, 0.1);
-        }
-
-        .chat-input form {
-            display: flex;
-            gap: 10px;
-        }
-
-        .chat-input input {
-            flex: 1;
-            padding: 10px;
-            border-radius: 20px;
-            border: 1px solid #ddd;
-            color: #333 !important;
-            background: #fff !important;
-        }
-
-        .chat-input button {
-            border-radius: 50%;
-            width: 40px;
-            height: 40px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 0;
-        }
-    </style>
 
     <%- include('../partials/footer') %>

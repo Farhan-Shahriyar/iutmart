@@ -37,7 +37,7 @@ module.exports = function (passport) {
 
             const newUser = {
                 googleId: profile.id,
-                name: profile.displayName,
+                name: profile.displayName.replace(/\d+/g, '').trim(),
                 email: email,
                 avatar: profile.photos[0].value,
                 studentId: studentId
@@ -99,7 +99,7 @@ module.exports = function (passport) {
 
             const newUser = {
                 githubId: profile.id,
-                name: profile.displayName || profile.username,
+                name: (profile.displayName || profile.username).replace(/\d+/g, '').trim(),
                 email: email,
                 avatar: profile.photos[0].value,
                 studentId: studentId

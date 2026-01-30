@@ -8,7 +8,7 @@ const fs = require('fs');
 // @access  Public (or Private depending on req) - keeping Public for now
 exports.getProducts = async (req, res) => {
     try {
-        const products = await Product.find({ status: 'Available' }).populate('user', 'name avatar');
+        const products = await Product.find({ status: 'Available' }).populate('user', 'name avatar studentId');
         res.render('products/index', {
             title: 'Marketplace',
             products,
@@ -25,7 +25,7 @@ exports.getProducts = async (req, res) => {
 // @access  Public
 exports.getProduct = async (req, res) => {
     try {
-        const product = await Product.findById(req.params.id).populate('user', 'name email avatar');
+        const product = await Product.findById(req.params.id).populate('user', 'name email avatar studentId');
 
         if (!product) {
             return res.render('error', { error: 'Product not found' });

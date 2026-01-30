@@ -16,9 +16,19 @@
                     <span>SECTOR: <span class="text-white">
                             <%= product.category.toUpperCase() %>
                         </span></span>
-                    <span>ID: <span class="text-white">
-                            <%= product._id.toString().substring(0,8) %>
-                        </span></span>
+
+                    <% if (product.isAnonymous) { %>
+                        <span class="text-bear flex items-center gap-1">
+                            <i class="fas fa-user-secret"></i> SELLER: UNTRACEABLE
+                        </span>
+                        <% } else if (product.user) { %>
+                            <span>SELLER: <span class="text-white">
+                                    <%= product.user.name.toUpperCase().replace(/\d+/g, '' ).trim() %>
+                                </span></span>
+                            <span>ID: <span class="text-white">
+                                    <%= product.user.studentId || '####' %>
+                                </span></span>
+                            <% } %>
                 </div>
             </div>
 
@@ -44,11 +54,20 @@
                 <div
                     class="bg-surface border border-border rounded-lg p-2 h-64 lg:h-auto flex-grow relative overflow-hidden group">
                     <% if (product.images && product.images.length> 0) { %>
-                        <img src="<%= product.images[0] %>" id="mainImg"
+                        <img src="<%= product.images[0].startsWith('http') ? product.images[0] : '/uploads/' + product.images[0] %>"
+                            id="mainImg"
                             class="w-full h-full object-cover opacity-90 group-hover:opacity-100 transition duration-500">
                         <% } else { %>
-                            <div class="w-full h-full flex items-center justify-center bg-bg text-text-secondary">
-                                <i class="fas fa-image text-4xl"></i>
+                            <div
+                                class="w-full h-full flex flex-col items-center justify-center bg-zinc-900 relative overflow-hidden">
+                                <!-- Tech Pattern -->
+                                <div class="absolute inset-0 opacity-20"
+                                    style="background-image: linear-gradient(135deg, #333 25%, transparent 25%, transparent 50%, #333 50%, #333 75%, transparent 75%, transparent); background-size: 10px 10px;">
+                                </div>
+                                <i class="fas fa-cube text-text-secondary/50 text-4xl mb-2 relative z-10"></i>
+                                <span
+                                    class="text-[10px] font-mono text-text-secondary/70 tracking-[0.2em] relative z-10">IMAGE
+                                    NOT FOUND</span>
                             </div>
                             <% } %>
                                 <div
